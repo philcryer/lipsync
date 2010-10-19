@@ -1,2 +1,2 @@
 lipsync
-an open source linux application that provides a command-line Dropbox like service, using OpenSSH, rsync and lsyncd 
+an open source linux application that provides a command-line, Dropbox-like service, using OpenSSH, rsync and lsyncd 
