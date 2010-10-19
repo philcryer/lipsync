@@ -1,2 +1,26 @@
 lipsync
 an open source linux application that provides a command-line, Dropbox-like service, using OpenSSH, rsync and lsyncd 
+
+REQUIREMENTS
+------------
+	* Linux
+	* OpenSSH
+	* lsyncd
+	* rsync
+
+INSTALL
+-------
+Deian/Ubuntu
+	# cd lipsync
+	# chmod +x setup
+	# ./setup.sh
+
+BACKSTORY
+---------
+This is a realization of a popular blog post I made last year: 
+	http://fak3r.com/2009/09/14/howto-build-your-own-open-source-dropbox-clone/
+
+LICENSE
+-------
+BSD, see LICENSE file for full details.
+
