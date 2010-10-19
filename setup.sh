@@ -89,7 +89,7 @@ group.user(){
 
 build.conffile(){
 	echo foo
-	cat >etc/lipsync.conf<<EOF
+	#cat >etc/lipsync.conf<<EOF
 	
 	blah...
 
@@ -143,9 +143,10 @@ else
 	echo "ok"
 fi
 
-if [ "${1} = "uninstall" ] && [ "${1}" != "remove" ]; then
+if [ "${1}" = "uninstall" ] && [ "${1}" != "remove" ]; then
 	echo "* Uninstall option chosen, all lipsync files and config will be purged..."
-	uninstall; exit 0
+	uninstall
+	exit 0
 else
 	questions
 fi
