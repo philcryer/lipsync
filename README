@@ -1,2 +1,2 @@
-libsync
-an open source, dropbox like, implementation that uses OpenSSH, rsync and lsyncd to get the game rolling
+lipsync
+an open source linux application that provides a command-line Dropbox like service, using OpenSSH, rsync and lsyncd 
