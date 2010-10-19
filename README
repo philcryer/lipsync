@@ -1,0 +1,2 @@
+libsync
+an open source, dropbox like, implementation that uses OpenSSH, rsync and lsyncd to get the game rolling
