@@ -117,21 +117,25 @@ build.conf(){
 
 deploy(){
 	echo "* Deploying lipsync..."
-	echo -n "	> installing /bin/lipsync..."
-	cp bin/lipsync /bin; chown root:root /bin/lipsync; chmod 755 /bin/lipsync
+	echo -n "	> installing /usr/bin/lipsync..."
+	cp usr/bin/lipsync /usr/bin; chown root:root /usr/bin/lipsync; chmod 755 /usr/bin/lipsync
+	echo "done"
+	echo -n "	> installing /usr/bin/lipsyncd..."
+	cp usr/bin/lipsyncd /usr/bin; chown root:root /usr/bin/lipsyncd; chmod 755 /bin/lipsyncd
 	echo "done"
 	echo -n "	> installing /etc/init.d/lipsync..."
 	cp bin/lipsyncd /etc/init.d/; chown root:root /etc/init.d/lipsyncd; chmod 755 /etc/init.d/lipsyncd
 	echo "done"
 	echo -n "	> installing /etc/lipsync.xml..."
-	cp etc/lipsync.xml /etc
+	cp etc/lipsync.conf.xml /etc
 	echo "done"
 	echo -n "	> installing docs /var/log/lipsync.log..."
 	mkdir /usr/share/doc/lipsync
-	cp doc/README /usr/share/doc/lipsync
+	cp README doc/* /usr/share/doc/lipsync
 	echo "done"
 	echo -n "	> preparing logfile /var/log/lipsync.log..."
 	touch /var/log/lipsync.log
+	chmod 640 /var/log/lipsync.log
 	echo "done"
 }
 
