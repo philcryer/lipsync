@@ -32,14 +32,15 @@ BACKSTORY
 ==============
 lipsync is a the realization of a popular blog post I made last year: 
 http://fak3r.com/2009/09/14/howto-build-your-own-open-source-dropbox-clone/
-Thanks to everyone that read, commented and encourged the further development of this idea!
+Thanks to everyone that read, thought, commented and encourged the further 
+development of this idea!
 
 
 ==============
 LICENSE
 ==============
-lipsync is licensed as open source under the Simplified BSD License.  See 
-the accompanying LICENSE file for full details, also available online at:
+lipsync is licensed as open source software under the Simplified BSD License.
+See the accompanying LICENSE file for full details, also available online at:
 http://www.opensource.org/licenses/bsd-license.php
 
 
