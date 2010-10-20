@@ -49,21 +49,33 @@ echo "ok"
 # Define functions
 ###############################################################################
 questions(){
-	echo -n "	- IP or domainname for the remote or hub server: "
+	echo -n "	- IP or domainname for server: "
 	read remote_server
 
-	echo -n "	- Port to run lipsync on (default ssh port is 22, might want to try that first): "
+	echo -n "	- SSH port on server (default SSH port is 22): "
 	read port
 	
-	echo -n "	- Lipsync username (this must presently exist on the local and remote systems): "
+	echo -n "	- lipsync username (must exist on the client and server): "
     	read username
     
-	echo -n "	- Full path to lipsync directory (local directory for user ${username} to be synced): "
-	read lipsync_dir
+	echo -n "	- lipsync local directory (local directory to be synced): "
+	read lipsync_dir_local
+
+	echo -n "	- lipsync remote directory (remote directory to be synced): "
+	read lipsync_dir_remote
 }
 
 ssh.keygen(){
-	echo -n "* Creating ssh key for ${username}..."
+	if [ -f '/home/${username}/.ssh/id_dsa' ]; then
+		echo -n "* Existing SSH key found for ${username} backing up..."
+		mv /home/${username}/.ssh/id_dsa /home/${username}/.ssh/id_dsa-OLD
+		if [ $? -eq 0 ]; then
+			echo "done"
+		else
+			echo; echo "	ERROR: there was an error backing up the SSH key"; exit 1
+		fi
+	fi
+	echo -n "* Creating new SSH key for ${username}..."
 	ssh-keygen -N '' -f /home/${username}/.ssh/id_dsa
 	if [ $? -eq 0 ]; then
 		echo "done"
@@ -110,9 +122,10 @@ create.user(){
 }
 
 build.conf(){
-	#cat >etc/lipsync.conf<<EOF
-	#EOF
-	sleep .1
+	sed 's|/absolute/path/to/source|'$lipsync_dir_local'|g' etc/lipsyncd.conf.xml > /tmp/lipsyncd.conf.xml.01
+	sed 's|/absolute/path/to/source|'$lipsync_dir_remote'|g' etc/lipsyncd.conf.xml > /tmp/lipsyncd.conf.xml.02
+	sed 's|desthost::module/|'$remote_server::$lipsync_dir_remote'|g' /tmp/lipsyncd.conf.xml.01 > /tmp/lipsyncd.conf.xml
+	exit 1
 }
 
 deploy(){
@@ -121,22 +134,24 @@ deploy(){
 	cp usr/bin/lipsync /usr/bin; chown root:root /usr/bin/lipsync; chmod 755 /usr/bin/lipsync
 	echo "done"
 	echo -n "	> installing /usr/bin/lipsyncd..."
-	cp usr/bin/lipsyncd /usr/bin; chown root:root /usr/bin/lipsyncd; chmod 755 /bin/lipsyncd
+	cp usr/bin/lipsyncd /usr/bin; chown root:root /usr/bin/lipsyncd; chmod 755 /usr/bin/lipsyncd
 	echo "done"
-	echo -n "	> installing /etc/init.d/lipsync..."
-	cp bin/lipsyncd /etc/init.d/; chown root:root /etc/init.d/lipsyncd; chmod 755 /etc/init.d/lipsyncd
+	echo -n "	> installing /etc/init.d/lipsyncd..."
+	cp etc/init.d/lipsyncd /etc/init.d/; chown root:root /etc/init.d/lipsyncd; chmod 755 /etc/init.d/lipsyncd
 	echo "done"
-	echo -n "	> installing /etc/lipsync.xml..."
-	cp etc/lipsync.conf.xml /etc
+	echo -n "	> installing /etc/lipsyncd.conf.xml..."
+	#cp etc/lipsyncd.conf.xml /etc
+	mv /tmp/lipsyncd.conf.xml /etc
 	echo "done"
-	echo -n "	> installing docs /var/log/lipsync.log..."
+	echo -n "	> installing docs /usr/share/doc/lipsync..."
 	mkdir /usr/share/doc/lipsync
 	cp README doc/* /usr/share/doc/lipsync
 	echo "done"
-	echo -n "	> preparing logfile /var/log/lipsync.log..."
-	touch /var/log/lipsync.log
-	chmod 640 /var/log/lipsync.log
+	echo -n "	> preparing logfile /var/log/lipsyncd.log..."
+	touch /var/log/lipsyncd.log
+	chmod 640 /var/log/lipsyncd.log
 	echo "done"
+	echo "lipsync installed `date`" > /var/log/lipsyncd.log
 }
 
 uninstall(){
@@ -149,10 +164,11 @@ uninstall(){
 	echo "done"
 
 	echo -n " 	NOTICE: removing lipsync files..."
-	rm -rf /etc/init.d/lipsync*
-	rm -rf /etc/lipsync*
+	rm -rf /etc/init.d/lipsyncd
+	rm -rf /etc/lipsyncd.conf.xml
+	rm -rf /usr/bin/lipsync*
 	rm -rf /var/log/lipsync*
-	rm -rf /usr/share/doc/lipsync*
+	rm -rf /usr/share/doc/lipsync
 	echo "done"
 }
 ###############################################################################
@@ -169,7 +185,7 @@ if [ "${1}" = "uninstall" ]; then
 	exit 0
 else
 	questions
-	#ssh.keygen
+#	ssh.keygen
 	create.group
 	create.user
 	build.conf
@@ -181,10 +197,11 @@ fi
 ###############################################################################
 # Startup lipsync and exit
 ###############################################################################
-echo "lipsync setup complete, staring lipsync..."
-# /etc/init.d/lipsync
+echo -n "lipsync setup complete, staring lipsync..."
+# /etc/init.d/lipsyncd start
+	echo "done"
 if [ -f /var/run/lipsync.pid ]; then
-	echo "	NOTICE: lipsync is running as pid `cat /var/run/lipsync.pid`"
+	echo "	NOTICE: lipsyncd is running as pid `cat /var/run/lipsyncd.pid`"
 fi
 ###############################################################################
 
