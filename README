@@ -1,26 +1,91 @@
 lipsync
-an open source linux application that provides a command-line, Dropbox-like service, using OpenSSH, rsync and lsyncd 
+An open source, BSD licensed Linux application that provides a command-line, 
+Dropbox - like service, using OpenSSH, rsync and lsyncd.
 
+
+==============
 REQUIREMENTS
-------------
-	* Linux
-	* OpenSSH
-	* lsyncd
-	* rsync
+==============
+Software requirements:
 
+	* Linux 2.6.xx (client/server)
+	* rsync (client/server)
+	* OpenSSH-server (server)
+	* OpenSSH-client (client)
+	* lsyncd (client)
+
+To run a base lipsync setup you need a client and a server. See the document 
+doc/INSTALL-01-base.txt for details. For some this is all they'll need for a 
+live backup system, however, once this is working you can build multiple clients
+that sync to the same server, which fuctions more like a standard Dropbox. See 
+the document doc/INSTALL-02-multiple-clients.txt for details.
+
+
+==============
 INSTALL
--------
-Deian/Ubuntu
-	# cd lipsync
-	# chmod +x setup
-	# ./setup.sh
+==============
 
+see the doc/ directory
+
+SERVER INSTALL
+--------------
+Debian (squeeze) / Ubuntu (karmic)
+	apt-get install openssh-server rsync
+Create a user to sync with, should be the same name as the one on the client 
+	useradd -U -m -d /home/USER -p PASSWORD -s /bin/bash USER
+Verfiy the account was created, and setup a sync directory
+	su - USER
+	mkdir sync
+
+
+CLIENT INSTALL
+--------------
+Debian (squeeze)
+	apt-get install openssh-client lsycnd rsync
+
+Ubuntu (karmic)
+	apt-get install openssh-client lsycnd rsync
+
+	NOTE: lsyncd isn't in Ubuntu's repo, to build it install the build tools
+		apt-get install libxml2-dev build-essential
+	Get the lsyncd code (get the latest at http://lsyncd.googlecode.com)
+		wget http://lsyncd.googlecode.com/files/lsyncd-1.39.tar.gz
+		tar -zxf lsyncd-1.39.tar.gz
+		cd lsyncd-1.39
+	NOTE: modify the bindir to match how Debian does it
+		./configure --bindir=/usr/bin
+		make
+	As root, install it
+		make install
+	Create a user to sync with, should be the same as the one on the server
+	        useradd -U -m -d /home/USER -p PASSWORD -s /bin/bash USER
+
+
+Now install lipsync (if installing from git, first apt-get git-core)
+	cd lipsync
+	chmod +x setup
+	./setup.sh
+Answer the questions, watch for errors.
+
+On the client, test it
+	su - USER
+	touch sync/testfile
+Check the logs 
+	tail -f /var/log/lipsync.log
+Check that the file was copied to the server
+
+
+==============
 BACKSTORY
----------
-This is a realization of a popular blog post I made last year: 
-	http://fak3r.com/2009/09/14/howto-build-your-own-open-source-dropbox-clone/
+==============
+lipsync is a the realization of a popular blog post I made last year: 
+http://fak3r.com/2009/09/14/howto-build-your-own-open-source-dropbox-clone/
+Thanks to everyone that read, commented and encourged the further development of this idea!
 
+
+==============
 LICENSE
--------
-BSD, see LICENSE file for full details.
-
+==============
+lipsync is licensed as open source under the Simplified BSD License.
+See accompanying LICENSE file for full details, also available online at:
+http://www.opensource.org/licenses/bsd-license.php
