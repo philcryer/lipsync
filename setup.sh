@@ -83,15 +83,18 @@ ssh.keygen(){
 		echo; echo "	ERROR: there was an error generating the ssh key"; exit 1
 	fi
 	
-	echo -n "* Transferring ssh key for ${username} to ${remote_server} (NOTE: you will be prompted to login)..."
-	ssh-copy-id ${remote_server}
+	echo "* Transferring ssh key for ${username} to ${remote_server}"; echo -n "	NOTE: you will be prompted to login..."
+	su ${username} -c "ssh-copy-id ${remote_server}"
+# ssh-copy-id ${remote_server}
 	if [ $? -eq 0 ]; then
-		echo "done"
+		#echo "done"
+		echo ""
 	else
 		echo; echo "	ERROR: there was an error transferring the ssh key"; exit 1
 	fi
-	echo -n "* Setting permissions on the ssh key for ${username} on ${remote_server} (NOTE: you should not be prompted to login)..."
-	ssh ${remote_server} 'chmod 700 .ssh'
+	echo "* Setting permissions on the ssh key for ${username} on ${remote_server}"; echo -n "NOTE: you should not be prompted to login)..."
+	su ${username} -c "ssh ${remote_server} 'chmod 700 .ssh'"
+	#ssh ${remote_server} 'chmod 700 .ssh'
 	if [ $? -eq 0 ]; then
 		echo "done"
 	else
@@ -122,10 +125,12 @@ create.user(){
 }
 
 build.conf(){
+	echo -n "* Creating lipsyncd.conf.xml for ${username}..."
 	sed 's|/absolute/path/to/source|'$lipsync_dir_local'|g' etc/lipsyncd.conf.xml > /tmp/lipsyncd.conf.xml.01
-	sed 's|/absolute/path/to/source|'$lipsync_dir_remote'|g' etc/lipsyncd.conf.xml > /tmp/lipsyncd.conf.xml.02
-	sed 's|desthost::module/|'$remote_server::$lipsync_dir_remote'|g' /tmp/lipsyncd.conf.xml.01 > /tmp/lipsyncd.conf.xml
-	exit 1
+	sed 's|USERNAME|'$username'|g' /tmp/lipsyncd.conf.xml.01 /tmp/lipsyncd.conf.xml.02
+	sed 's|PORT|'$port'|g' /tmp/lipsyncd.conf.xml.02 /tmp/lipsyncd.conf.xml.03
+	sed 's|desthost::module/|'$remote_server::$lipsync_dir_remote'|g' /tmp/lipsyncd.conf.xml.03 > /tmp/lipsyncd.conf.xml
+	echo "done"
 }
 
 deploy(){
@@ -149,14 +154,16 @@ deploy(){
 	echo "done"
 	echo -n "	> preparing logfile /var/log/lipsyncd.log..."
 	touch /var/log/lipsyncd.log
-	chmod 640 /var/log/lipsyncd.log
+#	chmod 640 /var/log/lipsyncd.log
+	chmod g+w /var/log/lipsyncd.log
+	chown lipsync:lipsync /var/log/lipsyncd.log
 	echo "done"
 	echo "lipsync installed `date`" > /var/log/lipsyncd.log
 }
 
 uninstall(){
 	echo -n "	NOTICE: stopping lipsync service..."
-	#/etc/init.d/lipsyncd stop >> /dev/null 
+	/etc/init.d/lipsyncd stop >> /dev/null 
 	echo "done"
 
 	echo -n "	NOTICE: removing lipsync user and group..."
@@ -185,7 +192,7 @@ if [ "${1}" = "uninstall" ]; then
 	exit 0
 else
 	questions
-#	ssh.keygen
+	ssh.keygen
 	create.group
 	create.user
 	build.conf
@@ -198,7 +205,7 @@ fi
 # Startup lipsync and exit
 ###############################################################################
 echo -n "lipsync setup complete, staring lipsync..."
-# /etc/init.d/lipsyncd start
+/etc/init.d/lipsyncd start
 	echo "done"
 if [ -f /var/run/lipsync.pid ]; then
 	echo "	NOTICE: lipsyncd is running as pid `cat /var/run/lipsyncd.pid`"

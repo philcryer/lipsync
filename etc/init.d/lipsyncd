@@ -34,17 +34,20 @@ case "$1" in
   start)
 	echo -n "Starting $DESC: "
 	echo -n "$NAME"
-	start-stop-daemon --start --quiet --pidfile /var/run/$NAME.pid \
-		--exec $DAEMON > /dev/null 2>&1 -- $ARGS
-	echo "."; echo "===== lipsyncd started on `date`" >> $LOGFILE
+	#start-stop-daemon --start --quiet --pidfile /var/run/$NAME.pid \
+	#	--exec $DAEMON > /dev/null 2>&1 -- $ARGS
+	start-stop-daemon --start --pidfile /var/run/$NAME.pid --exec $DAEMON $ARGS
+	#su bob -c "/etc/init.d/lipsyncd start"
+	echo "."; echo "====== lipsyncd started on `date` =====" >> $LOGFILE
 	;;
   stop)
 	echo -n "Stopping $DESC: "
 	echo -n "$NAME"
-	start-stop-daemon --retry 5 --oknodo --stop --quiet --pidfile /var/run/$NAME.pid \
+#	start-stop-daemon --retry 5 --oknodo --stop --quiet --pidfile /var/run/$NAME.pid \
 		--exec $DAEMON  > /dev/null 2>&1
+	su bob -c "/etc/init.d/lipsyncd stop"
 	killall lsyncd # figure out a nicer way to do this...
-	echo "."; echo "===== lipsyncd stopped on `date`" >> $LOGFILE
+	echo "."; echo "====== lipsyncd stopped on `date` =====" >> $LOGFILE
 	;;
   restart|force-reload)
 	$0 stop

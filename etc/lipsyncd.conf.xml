@@ -27,7 +27,8 @@ This is a default config file template for lsyncd.
 	<!--exclude-from filename="/tmp/exclude"/-->
 
 	<!-- the file to log messages -->
-	<logfile      filename="/var/log/lsyncd"/>
+	<!--<logfile      filename="/var/log/lsyncd"/>-->
+	<logfile      filename="/var/log/lipsyncd.log"/>
 
 	<!--Specify the rsync (or other) binary to call-->
 	<binary       filename="/usr/bin/lipsync"/>
@@ -50,6 +51,7 @@ This is a default config file template for lsyncd.
 	<callopts>
 		<option text="-lt%r"/>
 		<option text="--delete"/>
+		<option text="--rsh=ssh -l USERNAME -p PORT"/>
 		<exclude-file/>
 		<source/>
 		<destination/>
