@@ -1,0 +1,54 @@
+==============
+INSTALL - base
+==============
+
+To run a base lipsync setup you need a client and a server.
+
+SERVER INSTALL
+--------------
+Debian (squeeze) / Ubuntu (karmic)
+	apt-get install openssh-server rsync
+Create a user to sync with, should be the same name as the one on the client 
+	useradd -U -m -d /home/USER -p PASSWORD -s /bin/bash USER
+Verfiy the account was created, and setup a sync directory
+	su - USER
+	mkdir sync
+
+
+CLIENT INSTALL
+--------------
+Debian (squeeze)
+	apt-get install openssh-client lsycnd rsync
+
+Ubuntu (karmic)
+	apt-get install openssh-client lsycnd rsync
+
+	NOTE: lsyncd isn't in Ubuntu's repo, to build it install the build tools
+		apt-get install libxml2-dev build-essential
+	Get the lsyncd code (get the latest at http://lsyncd.googlecode.com)
+		wget http://lsyncd.googlecode.com/files/lsyncd-1.39.tar.gz
+		tar -zxf lsyncd-1.39.tar.gz
+		cd lsyncd-1.39
+	NOTE: modify the bindir to match how Debian does it
+		./configure --bindir=/usr/bin
+		make
+	As root, install it
+		make install
+	Create a user to sync with, should be the same as the one on the server
+	        useradd -U -m -d /home/USER -p PASSWORD -s /bin/bash USER
+
+
+Now install lipsync (if installing from git, first apt-get git-core)
+	cd lipsync
+	chmod +x setup
+Know IP or hostname of the server, the SSH port, the username and password
+	./setup.sh
+Answer the questions, watch for errors.
+
+On the client, test it
+	su - USER
+	touch sync/testfile
+Check the logs 
+	tail -f /var/log/lipsync.log
+
+Check that the file was copied to the server

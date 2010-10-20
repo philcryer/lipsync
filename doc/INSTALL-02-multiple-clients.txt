@@ -1,0 +1,18 @@
+==============
+INSTALL - multiple clients
+==============
+
+To build multiple clients that sync to the same server.
+
+NOTE: this doc assumes you have the base setup working (INSTALL-01-base.txt)
+
+
+SERVER INSTALL
+--------------
+Debian (squeeze) / Ubuntu (karmic)
+	...
+
+CLIENT INSTALL
+--------------
+Debian (squeeze) / Ubuntu (karmic)
+	...
