@@ -1,3 +1,17 @@
 #!/bin/bash
-/usr/bin/lsyncd --conf /etc/lipsync.xml --debug
+
+# this from http://code.google.com/p/lsyncd/wiki/HowToExecAfter
+# execute rsync just like it would have been done directly,
+# but save the exit code
+IFS=
+err=0
+/usr/bin/rsync $@ || err=$?
+
+# this writes source -> destination details to /var/log/lipsyncd.log
+eval src=\${$(($# - 1))}
+eval dst=\${$#}
+echo "$src -> $dst" >> /var/log/lipsyncd.log || true
+
+# returns the exit code of rsync to lsyncd
+exit $err
 

@@ -17,6 +17,7 @@ DAEMON=/usr/bin/lipsyncd
 CONFIG="/etc/lipsyncd.conf.xml"
 NAME=lipsyncd
 DESC="daemon lipsyncd"
+LOGFILE=/var/log/lipsyncd.log
 
 set -e
 
@@ -35,14 +36,15 @@ case "$1" in
 	echo -n "$NAME"
 	start-stop-daemon --start --quiet --pidfile /var/run/$NAME.pid \
 		--exec $DAEMON > /dev/null 2>&1 -- $ARGS
-	echo "."
+	echo "."; echo "===== lipsyncd started on `date`" >> $LOGFILE
 	;;
   stop)
 	echo -n "Stopping $DESC: "
 	echo -n "$NAME"
 	start-stop-daemon --retry 5 --oknodo --stop --quiet --pidfile /var/run/$NAME.pid \
 		--exec $DAEMON  > /dev/null 2>&1
-	echo "."
+	killall lsyncd # figure out a nicer way to do this...
+	echo "."; echo "===== lipsyncd stopped on `date`" >> $LOGFILE
 	;;
   restart|force-reload)
 	$0 stop
