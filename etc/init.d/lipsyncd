@@ -74,22 +74,11 @@ case "$1" in
 	;;
   status)
 	if [ -s /var/run/$NAME.pid ]; then
-            RUNNING=$(cat /var/run/$NAME.pid)
-            if [ -d /proc/$RUNNING ]; then
-                if [ $(readlink /proc/$RUNNING/exe) = $DAEMON ]; then
-                    echo "$NAME is running."
-                    exit 0
-                fi
-            fi
-
-            # No such PID, or executables don't match
-            echo "$NAME is not running, but pidfile existed."
-            rm /var/run/$NAME.pid
-            exit 1
+        	echo "$NAME is running as PID `cat /var/run/$NAME.pid`."
+                exit 0
         else
-            rm -f /var/run/$NAME.pid
-            echo "$NAME not running."
-            exit 1
+           	echo "$NAME not running."
+           	exit 1
         fi
 	;;
   *)

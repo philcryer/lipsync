@@ -220,9 +220,10 @@ fi
 ###############################################################################
 # Startup lipsync and exit
 ###############################################################################
-echo -n "lipsync setup complete, staring lipsync..."
+#echo -n "lipsync setup complete, staring lipsync..."
+echo "lipsync setup complete, staring lipsync..."
 /etc/init.d/lipsyncd start
-	echo "done"
+#	echo "done"
 if [ -f /var/run/lipsyncd.pid ]; then
 	echo "	NOTICE: lipsyncd is running as pid `cat /var/run/lipsyncd.pid`"
 fi
