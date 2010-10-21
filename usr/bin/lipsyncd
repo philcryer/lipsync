@@ -1,5 +1,5 @@
 #!/bin/bash
-#/usr/bin/lsyncd --conf /etc/lipsyncd.conf.xml --debug
+#/usr/bin/lsyncd --conf /etc/lipsyncd.conf.xml
 
 # having trouble? rerun with --debug and watch the logfiles
 /usr/bin/lsyncd --conf /etc/lipsyncd.conf.xml --debug
