@@ -2,7 +2,7 @@
       lipsync
 -------------------------
 An open source, BSD licensed Linux application that provides a command-line, 
-Dropbox - like service, using OpenSSH, rsync and lsyncd.
+Dropbox - like service, using OpenSSH, rsync, unison and lsyncd.
 
 
 =========================
