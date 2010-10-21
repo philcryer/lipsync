@@ -137,38 +137,52 @@ build.conf(){
 }
 
 deploy(){
-	echo -n "* Enabling lipsync for $username..."
-	touch /home/$username/.lipsyncd; chown $username:$username /home/$username/.lipsyncd
-	echo "done"
+	#echo -n "* Enabling lipsync for $username..."
+	#touch /home/$username/.lipsyncd; chown $username:$username /home/$username/.lipsyncd
+	#echo "done"
 	echo -n "* Adding new lipsync user to lipsync group..."
 	adduser $username lipsync >> /dev/null
 	echo "done"
+########################
 	echo "* Deploying lipsync..."
 	echo -n "	> installing /usr/bin/lipsync..."
 	cp usr/bin/lipsync /usr/bin; chown root:root /usr/bin/lipsync; chmod 755 /usr/bin/lipsync
 	echo "done"
+########################
 	echo -n "	> installing /usr/bin/lipsyncd..."
 	cp usr/bin/lipsyncd /usr/bin; chown root:root /usr/bin/lipsyncd; chmod 755 /usr/bin/lipsyncd
 	echo "done"
+########################
 	echo -n "	> installing /etc/init.d/lipsyncd..."
-	#cp etc/init.d/lipsyncd /etc/init.d/; chown root:root /etc/init.d/lipsyncd; chmod 755 /etc/init.d/lipsyncd
 	sed 's|LSUSER|'$username'|g' etc/init.d/lipsyncd > /etc/init.d/lipsyncd; chown root:root /etc/init.d/lipsyncd; chmod 755 /etc/init.d/lipsyncd
-
 	echo "done"
+########################
+	echo -n "	> installing /etc/cron.d/lipsync..."
+	sed 's|LSUSER|'$username'|g' etc/cron.d/lipsync > /tmp/lipsync.01
+	sed 's|PORT|'$port'|g' /tmp/lipsync.01 > /tmp/lipsync.02
+	sed 's|LSLOCDIR|'$lipsync_dir_local'|g' /tmp/lipsync.02 > /tmp/lipsync.03
+	sed 's|LSREMDIR|'$lipsync_dir_remote'|g' /tmp/lipsync.03 > /tmp/lipsync.04
+	sed 's|LSREMSERV|'$remote_server'|g' /tmp/lipsync.04 > /etc/cron.d/lipsync
+	rm /tmp/lipsync.*
+	echo "done"
+########################
 	echo -n "	> installing /etc/lipsyncd.conf.xml..."
-	#cp etc/lipsyncd.conf.xml /etc
 	mv /tmp/lipsyncd.conf.xml /etc
+	rm /tmp/lipsyncd.conf.*
 	echo "done"
+########################
 	echo -n "	> installing docs /usr/share/doc/lipsync..."
 	mkdir /usr/share/doc/lipsync
 	cp README doc/* /usr/share/doc/lipsync
 	echo "done"
+########################
 	echo -n "	> preparing logfile /var/log/lipsyncd.log..."
 	touch /var/log/lipsyncd.log
 #	chmod 640 /var/log/lipsyncd.log
 	chmod g+w /var/log/lipsyncd.log
 	chown lipsync:lipsync /var/log/lipsyncd.log
 	echo "done"
+########################
 	echo "lipsync installed `date`" > /var/log/lipsyncd.log
 }
 
@@ -177,9 +191,9 @@ uninstall(){
 	/etc/init.d/lipsyncd stop >> /dev/null 
 	echo "done"
 	
-	echo -n "	NOTICE: disabling lipsync for user..."
-	rm -f /home/$username/.lipsyncd
-	echo "done"
+	#echo -n "	NOTICE: disabling lipsync for user..."
+	#rm -f /home/$username/.lipsyncd
+	#echo "done"
 
 	echo -n "	NOTICE: removing lipsync user and group..."
 	userdel lipsync
