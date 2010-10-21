@@ -1,61 +1,100 @@
-#!/bin/sh
+#! /bin/sh
+#
 ### BEGIN INIT INFO
 # Provides:          lipsyncd
-# Required-Start:    $remote_fs
-# Required-Stop:     $remote_fs
+# Required-Start:    $syslog $local_fs
+# Required-Stop:     $syslog $local_fs
+# Should-Start:      dbus avahi
+# Should-Stop:       dbus avahi
 # Default-Start:     2 3 4 5
-# Default-Stop:      0 1 6
+# Default-Stop:      1
 # Short-Description: a service that provides command-line, Dropbox like syncing
-
-
 ### END INIT INFO
 # /etc/init.d/lipsyncd start and stop lipsyncd daemon 
 # Phil Cryer, phil@cryer.us
 
-PATH=/sbin:/bin:/usr/sbin:/usr/bin
+PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
 DAEMON=/usr/bin/lipsyncd
-CONFIG="/etc/lipsyncd.conf.xml"
 NAME=lipsyncd
-DESC="daemon lipsyncd"
+DESC="a service that provides command-line, Dropbox like syncing"
 LOGFILE=/var/log/lipsyncd.log
+
+test -x $DAEMON || exit 0
+
+RUN=yes
+RUN_AS_USER=LSUSER
+
+# Include lipsyncd defaults if available
+if [ -f /etc/default/lipsyncd ] ; then
+    . /etc/default/lipsyncd
+fi
+
+if [ "x$RUN" != "xyes" ] ; then
+    exit 0
+fi
+
+DAEMON_OPTS="-a $RUN_AS_USER"
 
 set -e
 
-# Check if DAEMON binary exist
-test -f $DAEMON || exit 0
-
-if [ -f "/etc/default/lipsyncd" ]; then
-     . /etc/default/lipsyncd
-fi
-
-#ARGS="-c $CONFIG -s /var/lib/lipsyncd/lipsyncd.state"
-
 case "$1" in
   start)
-	echo -n "Starting $DESC: "
-	echo -n "$NAME"
-	#start-stop-daemon --start --quiet --pidfile /var/run/$NAME.pid \
-	#	--exec $DAEMON > /dev/null 2>&1 -- $ARGS
-	start-stop-daemon --start --pidfile /var/run/$NAME.pid --exec $DAEMON $ARGS
-	#su bob -c "/etc/init.d/lipsyncd start"
+	echo -n "Starting $NAME daemon"
+#	start-stop-daemon --start --quiet --pidfile /var/run/$NAME.pid \
+#		--exec $DAEMON -- $DAEMON_OPTS
+	su $RUN_AS_USER -c "/usr/bin/lsyncd --conf /etc/lipsyncd.conf.xml --debug"
+#	echo "$NAME."
 	echo "."; echo "====== lipsyncd started on `date` =====" >> $LOGFILE
+	
+	echo `ps -fe | grep "/usr/bin/lsyncd" | grep -v grep | cut -d' ' -f7` > /var/run/$NAME.pid
 	;;
   stop)
-	echo -n "Stopping $DESC: "
-	echo -n "$NAME"
-#	start-stop-daemon --retry 5 --oknodo --stop --quiet --pidfile /var/run/$NAME.pid \
-		--exec $DAEMON  > /dev/null 2>&1
-	su bob -c "/etc/init.d/lipsyncd stop"
-	killall lsyncd # figure out a nicer way to do this...
+	echo -n "Stopping $NAME daemon"
+	#start-stop-daemon --stop --oknodo --quiet --pidfile /var/run/$NAME.pid \ --exec $DAEMON
+	`killall lsyncd`
+	rm /var/run/$NAME.pid
+	#echo "$NAME."
 	echo "."; echo "====== lipsyncd stopped on `date` =====" >> $LOGFILE
 	;;
-  restart|force-reload)
-	$0 stop
-	$0 start
+  force-reload)
+	# check whether $DAEMON is running. If so, restart
+	start-stop-daemon --stop --test --quiet --pidfile \
+		/var/run/$NAME.pid --exec $DAEMON \
+	&& $0 restart \
+	|| exit 0
+	;;
+  restart)
+	echo -n "Restarting $DESC: "
+	start-stop-daemon --stop --quiet --pidfile \
+		/var/run/$NAME.pid --exec $DAEMON
+	sleep 1
+	start-stop-daemon --start --quiet --pidfile \
+		/var/run/$NAME.pid --exec $DAEMON -- $DAEMON_OPTS
+	echo "$NAME."
+	;;
+  status)
+	if [ -s /var/run/$NAME.pid ]; then
+            RUNNING=$(cat /var/run/$NAME.pid)
+            if [ -d /proc/$RUNNING ]; then
+                if [ $(readlink /proc/$RUNNING/exe) = $DAEMON ]; then
+                    echo "$NAME is running."
+                    exit 0
+                fi
+            fi
+
+            # No such PID, or executables don't match
+            echo "$NAME is not running, but pidfile existed."
+            rm /var/run/$NAME.pid
+            exit 1
+        else
+            rm -f /var/run/$NAME.pid
+            echo "$NAME not running."
+            exit 1
+        fi
 	;;
   *)
 	N=/etc/init.d/$NAME
-	echo "Usage: $N {start|stop|restart|force-reload|syntax}" >&2
+	echo "Usage: $N {start|stop|restart|force-reload}" >&2
 	exit 1
 	;;
 esac
