@@ -79,6 +79,7 @@ ssh.keygen(){
 	echo -n "* Creating new SSH key for ${username}..."
 	ssh-keygen -q -N '' -f /home/${username}/.ssh/id_dsa
 	if [ $? -eq 0 ]; then
+		chown $username:$username /home/${username}/.ssh
 		echo "done"
 	else
 		echo; echo "	ERROR: there was an error generating the ssh key"; exit 1
@@ -182,6 +183,7 @@ uninstall(){
 
 	echo -n "	NOTICE: removing lipsync user and group..."
 	userdel lipsync
+	groupdel lipsync
 	echo "done"
 
 	echo -n " 	NOTICE: removing lipsync files..."
@@ -221,7 +223,7 @@ fi
 echo -n "lipsync setup complete, staring lipsync..."
 /etc/init.d/lipsyncd start
 	echo "done"
-if [ -f /var/run/lipsync.pid ]; then
+if [ -f /var/run/lipsyncd.pid ]; then
 	echo "	NOTICE: lipsyncd is running as pid `cat /var/run/lipsyncd.pid`"
 fi
 ###############################################################################
