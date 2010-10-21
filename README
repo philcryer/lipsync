@@ -1,52 +1,50 @@
-lipsync
+-------------------------
+      lipsync
+-------------------------
 An open source, BSD licensed Linux application that provides a command-line, 
 Dropbox - like service, using OpenSSH, rsync and lsyncd.
 
 
-==============
-REQUIREMENTS
-==============
+=========================
+|     REQUIREMENTS	|	
+=========================
 Software requirements:
 
-	* Linux 2.6.xx (client/server)
-	* rsync (client/server)
-	* OpenSSH-server (server)
-	* OpenSSH-client (client)
-	* lsyncd (client)
+	* Linux 2.6.xx (on the client and server)
+	* rsync (on the client and server)
+	* OpenSSH-server (on the server)
+	* OpenSSH-client (on the client)
+	* lsyncd (on the client)
 
-To run a base lipsync setup you need a client and a server. See the document 
-doc/INSTALL-01-base.txt for details. For some this is all they'll need for a 
-live backup system, however, once this is working you can build multiple clients
-that sync to the same server, which fuctions more like a standard Dropbox. See 
-the document doc/INSTALL-02-multiple-clients.txt for details.
+To get started with lipsync you need at least a client and a server.
 
 
-==============
-INSTALL
-==============
-see the doc/ directory for full INSTALL documentation
+=========================
+|     INSTALL	        |
+=========================
+see the INSTALL for documentation
 
 
-==============
-BACKSTORY
-==============
+=========================
+|     BACKSTORY	        |
+=========================
 lipsync is a the realization of a popular blog post I made last year: 
 http://fak3r.com/2009/09/14/howto-build-your-own-open-source-dropbox-clone/
 Thanks to everyone that read, thought, commented and encourged the further 
 development of this idea!
 
 
-==============
-LICENSE
-==============
+=========================
+|     LICENSE	        |
+=========================
 lipsync is licensed as open source software under the Simplified BSD License.
 See the accompanying LICENSE file for full details, also available online at:
 http://www.opensource.org/licenses/bsd-license.php
 
 
-==============
-CONTACT
-==============
-I can be reached at phil (at) cryer (dot) us
+=========================
+|     CONTACT           |
+=========================
+I can be reached via email at phil (at) cryer (dot) us
 
 Thanks
