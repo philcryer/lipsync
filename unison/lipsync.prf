@@ -1,0 +1,12 @@
+fastcheck = true
+silent = true
+sortnewfirst = true
+rshargs = -C
+ignore = Name .DS_Store
+ignore = Name *.DS_Store
+ignore = Name Thumbs.db
+ignore = Name *~
+ignore = Name *.tmp
+
+root = LSLOCDIR
+root = ssh://LSUSER@LSREMSERV/LSREMDIR

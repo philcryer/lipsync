@@ -49,9 +49,10 @@ This is a default config file template for lsyncd.
 
 		destination will be the destination path to sync to -->
 	<callopts>
-		<option text="-lt%r"/>
-		<option text="--delete"/>
-		<option text="--rsh=ssh -l USERNAME -p PORT"/>
+	<!--	<option text="-lt%r"/>-->
+	<!--	<option text="delete"/>-->
+	<!--	<option text="rsh=ssh -l USERNAME -p PORT"/>-->
+                <option text="-batch"/>
 		<exclude-file/>
 		<source/>
 		<destination/>
@@ -60,8 +61,8 @@ This is a default config file template for lsyncd.
 
 
 <directory>
-	<source path="/absolute/path/to/source"/>
-	<target path="desthost::module/"/>
+	<source path="LSLOCDIR"/>
+	<target path="LSREMSERV::LSREMDIR"/>
 	<!-- 
 	or it can also be an absolute path for localhost 
 	<target path="/absolute/path/to/target">

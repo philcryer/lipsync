@@ -5,7 +5,13 @@
 # but save the exit code
 IFS=
 err=0
-/usr/bin/rsync $@ || err=$?
+#/usr/bin/rsync $@ || err=$?
+
+#unison lipsync $@ || err=$?
+#unison lipsync $@ || err=$?
+#unison lipsync -debug all || err=$?
+unison lipsync || err=$?
+#unison $@ || err=$?
 
 # this writes source -> destination details to /var/log/lipsyncd.log
 eval src=\${$(($# - 1))}

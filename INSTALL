@@ -6,8 +6,11 @@ To get started with lipsync you need at least a client and a server.
 
 SERVER INSTALL
 ----------------------------
-Debian (squeeze) / Ubuntu (karmic)
-	apt-get install openssh-server rsync
+Debian (squeeze) 
+	apt-get install openssh-server rsync unison2.27.57
+
+Ubuntu (karmic)
+	apt-get install openssh-server rsync unison
 
 Create a user to sync with, should be the same name as the one on the client 
 	useradd -U -m -d /home/USER -p PASSWORD -s /bin/bash USER
@@ -21,13 +24,13 @@ CLIENT INSTALL
 ----------------------------
 Debian (squeeze)
 Install required software
-	apt-get install openssh-client lsycnd rsync
+	apt-get install openssh-client rsync unison2.27.57 lsycnd
 
 Debian users can skip down to 'Create a user to sync with...'
 
 Ubuntu (karmic)
 Install required software
-	apt-get install openssh-client rsync
+	apt-get install openssh-client rsync unison
 
 --------------
 NOTE: lsyncd isn't in Ubuntu's repo, so if you're in Ubuntu have to build it
@@ -67,7 +70,6 @@ After you've answered the questions, watch for errors.
 
 
 
-
 =========================
 |	  TEST		|	
 =========================
@@ -100,3 +102,18 @@ examples, always propogating to the server after a slight delay (the delay
 occurs so lsyncd can prevent spinning up for every little change - if there are
 other changes after the first one they will be chained to the one sync, making
 things more efficient)
+
+
+
+=========================
+| INSTALL MORE CLIENTS	|	
+=========================
+
+Now that you have a working 2 node setup, it's time to install on more clients.
+All you need to do is follow the CLIENT INSTALL directions on each client you
+want to add. Be sure to answer the questions with the same SERVER, this way
+unison will work in a star style setup, with the server being the hub, and the
+clients all serving as spokes. This way the hub 'wins' if it has something the
+spokes need, but will sync-up by deleting any missing files from the spoke in
+the hub. It sounds more complicated that it is.
+

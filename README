@@ -12,6 +12,7 @@ Software requirements:
 
 	* Linux 2.6.xx (on the client and server)
 	* rsync (on the client and server)
+	* unison (on the client and server)
 	* OpenSSH-server (on the server)
 	* OpenSSH-client (on the client)
 	* lsyncd (on the client)

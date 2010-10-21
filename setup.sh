@@ -41,6 +41,7 @@ type -P ssh &>/dev/null || { echo; echo "	ERROR: lipsync requires ssh-client but
 type -P ssh-copy-id &>/dev/null || { echo; echo "	ERROR: lipsync requires ssh-copy-id but it's not installed" >&2; exit 1; }
 type -P rsync &>/dev/null || { echo; echo "	ERROR: lipsync requires rsync but it's not installed" >&2; exit 1; }
 type -P lsyncd &>/dev/null || { echo; echo "	ERROR: lipsync requires lsyncd but it's not installed" >&2; exit 1; }
+type -P unison &>/dev/null || { echo; echo "	ERROR: lipsync requires unison but it's not installed" >&2; exit 1; }
 echo "ok"
 ###############################################################################
 
@@ -52,8 +53,8 @@ questions(){
 	echo -n "	- IP or domainname for server: "
 	read remote_server
 
-	echo -n "	- SSH port on server (default is 22): "
-	read port
+#	echo -n "	- SSH port on server (default is 22): "
+#	read port
 	
 	echo -n "	- lipsync username (must exist on the client and server): "
     	read username
@@ -129,10 +130,10 @@ create.user(){
 
 build.conf(){
 	echo -n "* Creating lipsyncd.conf.xml for ${username}..."
-	sed 's|/absolute/path/to/source|'$lipsync_dir_local/'|g' etc/lipsyncd.conf.xml > /tmp/lipsyncd.conf.xml.01
-	sed 's|USERNAME|'$username'|g' /tmp/lipsyncd.conf.xml.01 > /tmp/lipsyncd.conf.xml.02
-	sed 's|PORT|'$port'|g' /tmp/lipsyncd.conf.xml.02 > /tmp/lipsyncd.conf.xml.03
-	sed 's|desthost::module/|'$remote_server:$lipsync_dir_remote/'|g' /tmp/lipsyncd.conf.xml.03 > /tmp/lipsyncd.conf.xml
+	sed 's|LSLOCDIR|'$lipsync_dir_local/'|g' etc/lipsyncd.conf.xml > /tmp/lipsyncd.conf.xml.01
+	sed 's|LSUSER|'$username'|g' /tmp/lipsyncd.conf.xml.01 > /tmp/lipsyncd.conf.xml.02
+	#sed 's|PORT|'$port'|g' /tmp/lipsyncd.conf.xml.02 > /tmp/lipsyncd.conf.xml.03
+	sed 's|LSREMSERV::LSREMDIR/|'ssh://$remote_server://$lipsync_dir_remote/'|g' /tmp/lipsyncd.conf.xml.02 > /tmp/lipsyncd.conf.xml
 	echo "done"
 }
 
@@ -159,10 +160,10 @@ deploy(){
 ########################
 	echo -n "	> installing /etc/cron.d/lipsync..."
 	sed 's|LSUSER|'$username'|g' etc/cron.d/lipsync > /tmp/lipsync.01
-	sed 's|PORT|'$port'|g' /tmp/lipsync.01 > /tmp/lipsync.02
-	sed 's|LSLOCDIR|'$lipsync_dir_local'|g' /tmp/lipsync.02 > /tmp/lipsync.03
-	sed 's|LSREMDIR|'$lipsync_dir_remote'|g' /tmp/lipsync.03 > /tmp/lipsync.04
-	sed 's|LSREMSERV|'$remote_server'|g' /tmp/lipsync.04 > /etc/cron.d/lipsync
+	#sed 's|PORT|'$port'|g' /tmp/lipsync.01 > /tmp/lipsync.02
+	sed 's|LSLOCDIR|'$lipsync_dir_local'|g' /tmp/lipsync.01 > /tmp/lipsync.02
+	sed 's|LSREMDIR|'$lipsync_dir_remote'|g' /tmp/lipsync.02 > /tmp/lipsync.03
+	sed 's|LSREMSERV|'$remote_server'|g' /tmp/lipsync.03 > /etc/cron.d/lipsync
 	rm /tmp/lipsync.*
 	echo "done"
 ########################
@@ -173,7 +174,7 @@ deploy(){
 ########################
 	echo -n "	> installing docs /usr/share/doc/lipsync..."
 	mkdir /usr/share/doc/lipsync
-	cp README doc/* /usr/share/doc/lipsync
+	cp README INSTALL LICENSE /usr/share/doc/lipsync
 	echo "done"
 ########################
 	echo -n "	> preparing logfile /var/log/lipsyncd.log..."
@@ -181,6 +182,17 @@ deploy(){
 #	chmod 640 /var/log/lipsyncd.log
 	chmod g+w /var/log/lipsyncd.log
 	chown lipsync:lipsync /var/log/lipsyncd.log
+	echo "done"
+########################
+	echo -n "	> enabling unison for $username..."
+	sed 's|LSLOCDIR|'$lipsync_dir_local/'|g' unison/lipsync.prf > /tmp/lipsync.prf.01
+	sed 's|LSUSER|'$username'|g' /tmp/lipsync.prf.01 > /tmp/lipsync.prf.02
+	sed 's|LSREMDIR|'$lipsync_dir_remote'|g' /tmp/lipsync.prf.02 > /tmp/lipsync.prf.03
+	sed 's|LSREMSERV|'$remote_server'|g' /tmp/lipsync.prf.03 > /tmp/lipsync.prf
+	mkdir ~/$username/.unison
+	cp /tmp/lipsync.prf ~/$username/.unison/
+	chown -R $username:$username ~/$username/.unison/
+	rm /tmp/lipsync.*
 	echo "done"
 ########################
 	echo "lipsync installed `date`" > /var/log/lipsyncd.log
