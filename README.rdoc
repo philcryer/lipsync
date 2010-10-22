@@ -1,41 +1,57 @@
 = lipsync
 
-An open source, BSD licensed Linux application that provides a command-line, Dropbox - like service, using OpenSSH, rsync, unison and lsyncd.
+_A lightweight service that provides command-line, Dropbox like syncing_
 
-== Requirments
-Software requirements:
-- Linux 2.6.xx (on the client and server)
-- rsync (on the client and server)
-- unison (on the client and server)
-- OpenSSH-server (on the server)
-- OpenSSH-client (on the client)
-- lsyncd (on the client)
+lipsync is an open source, lightweight service that provides a command-line, Dropbox - like syncing in Linux by utilizing OpenSSH, rsync, unison and lsyncd. lipsync is a the realization of a popular blog post of mine named {HOWTO build your own open source dropbox clone}[http://fak3r.com/2009/09/14/howto-build-your-own-open-source-dropbox-clone/] Since I made the posting I've recieved a great deal of interest, and had time to test and architect a workable solution. Thanks to everyone that read, commented and encourged the further development of this idea!  
 
-To get started with lipsync you need at least a client and a server.
+== Caveats
 
-== INSTALL	   
+Much of my initial feedback I recived asked for a graphical user interface and support for Windows. Please know that I have attempted neither, instead deciding to focus on the server-side, fleshing out the architecture, deciding on all the options and understanding performance. Since most of the software used for lipsync is cross-platform, I'd be interested in working with others that want to build a gui front end to talk to the backend. I've been interested in the work done on the Sparkleshare project, and since they use a few different backends I hope that the software is agnostic enough to adapt to use what I've created.
 
-	cd lipsync
+== Features
+- allows for remote, secured backup/file sync to a central host
+- with one server and mulitple clients, true 2 way syncing can occur
+- safe for everyday use
+- low fat
+
+== Dependencies
+To get started with lipsync you need at least a client and a server, perferably on multiple systems. Software requirements:
+- Server - Linux 2.6.x, rsync, unison, opensshd
+- Client - Linux 2.6.x, rsync, unison, openssh, lsyncd
+
+== Install	   
+
+	git clone git@github.com:philcryer/lipsync.git
+	cd lipsync.git
 	chmod +x setup.sh
 	./setup.sh
 
-see the INSTALL file for full documentation
-
-== Backstory
-lipsync is a the realization of a popular blog post I made last year
-http://fak3r.com/2009/09/14/howto-build-your-own-open-source-dropbox-clone/
-Thanks to everyone that read, thought, commented and encourged the further 
-development of this idea!
-
+see the {INSTALL}[http://github.com/philcryer/lipsync/blob/master/INSTALL] file for full documentation
 
 == License
-lipsync is licensed as open source software under the Simplified BSD License.
-See the accompanying LICENSE file for full details, also available online at:
-http://www.opensource.org/licenses/bsd-license.php
 
+lipsync is licensed as open source software under the {Simplified BSD License}[http://www.opensource.org/licenses/bsd-license.php]
+See the accompanying LICENSE file for full details
 
-== Contact
+Copyright (c) 2010, Phil Cryer
+All rights reserved.
 
-I can be reached via email at phil (at) cryer (dot) us
+Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+
+Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution. Neither the name of the Phil Cryer nor the names of its contributors may be used to endorse or promote products derived from this software without specific prior written permission. THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+== Authors / Contact
+
+phil (at) cryer (dot) us
+
+== Download
+
+You can download this project in either {zip}[http://github.com/philcryer/lipsync/zipball/master] or {tar}[http://github.com/philcryer/lipsync/tarball/master] formats.
+
+You can also clone the project with {Git}[http://git-scm.com/] by running:
+
+	git clone git://github.com/philcryer/lipsync
 
 Thanks
+
+| get the source code on GitHub : philcryer/lipsync |
