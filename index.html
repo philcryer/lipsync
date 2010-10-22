@@ -1,0 +1,235 @@
+CTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+
+	<title>philcryer/lipsync @ GitHub</title>
+	
+	<style type="text/css">
+		body {
+  		margin-top: 1.0em;
+  		background-color: #C0C0C0;
+		  font-family: "Helvetica,Arial,FreeSans";
+  		color: #ffffff;
+    }
+    #container {
+      margin: 0 auto;
+      width: 700px;
+    }
+		h1 { font-size: 3.8em; color: #C0C0C0; margin-bottom: 3px; }
+		h1 .small { font-size: 0.4em; }
+		h1 a { text-decoration: none }
+		h2 { font-size: 1.5em; color: #C0C0C0; }
+    h3 { text-align: center; color: #C0C0C0; }
+    a { color: #C0C0C0; }
+    .description { font-size: 1.2em; margin-bottom: 30px; margin-top: 30px; font-style: italic;}
+    .download { float: right; }
+		pre { background: #000; color: #fff; padding: 15px;}
+    hr { border: 0; width: 80%; border-bottom: 1px solid #aaa}
+    .footer { text-align:center; padding-top:30px; font-style: italic; }
+	</style>
+	
+</head>
+
+<body>
+  <a href="http://github.com/philcryer/lipsync"><img style="position: absolute; top: 0; right: 0; border: 0;" src="http://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub" /></a>
+
+  <div id="container">
+
+    <div class="download">
+      <a href="http://github.com/philcryer/lipsync/zipball/master">
+        <img border="0" width="90" src="http://github.com/images/modules/download/zip.png"></a>
+      <a href="http://github.com/philcryer/lipsync/tarball/master">
+        <img border="0" width="90" src="http://github.com/images/modules/download/tar.png"></a>
+    </div>
+
+    <h1><a href="http://github.com/philcryer/lipsync">lipsync</a>
+      <span class="small">by <a href="http://github.com/philcryer">philcryer</a></span></h1>
+
+    <div class="description">
+      A lightweight service that provides command-line, Dropbox like syncing
+    </div>
+
+    <p>An open source, BSD licensed, Linux lightweight service that provides command-line, Dropbox - like syncing, using OpenSSH, rsync, unison and lsyncd.
+
+lipsync is a the realization of a popular blog post I made last year: 
+http://fak3r.com/2009/09/14/howto-build-your-own-open-source-dropbox-clone/
+Thanks to everyone that read, thought, commented and encourged the further development of this idea!
+</p><h2>Dependencies</h2>
+<p>Linux 2.6.xx (on the client and server)
+rsync (on the client and server)
+unison (on the client and server)
+OpenSSH-server (on the server)
+OpenSSH-client (on the client)
+lsyncd (on the client)</p>
+<h2>Install</h2>
+<p>
+=========================
+|	INSTALL		|	
+=========================
+
+To get started with lipsync you need at least a client and a server.
+
+SERVER INSTALL
+----------------------------
+Debian (squeeze) 
+	apt-get install openssh-server rsync unison2.27.57
+
+Ubuntu (karmic)
+	apt-get install openssh-server rsync unison
+
+Create a user to sync with, should be the same name as the one on the client 
+	useradd -U -m -d /home/USER -p PASSWORD -s /bin/bash USER
+
+Verfiy the account was created, and setup a sync directory to sync with
+	su - USER
+	mkdir ~/sync
+
+
+CLIENT INSTALL
+----------------------------
+Debian (squeeze)
+Install required software
+	apt-get install openssh-client rsync unison2.27.57 lsycnd
+
+Debian users can skip down to 'Create a user to sync with...'
+
+Ubuntu (karmic)
+Install required software
+	apt-get install openssh-client rsync unison
+
+--------------
+NOTE: lsyncd isn't in Ubuntu's repo, so if you're in Ubuntu have to build it
+Install lsyncd (Ubuntu)
+Install build tools
+	apt-get install libxml2-dev build-essential
+
+Get the lsyncd code (get the latest from http://lsyncd.googlecode.com)
+wget http://lsyncd.googlecode.com/files/lsyncd-1.39.tar.gz
+	tar -zxf lsyncd-1.39.tar.gz
+	cd lsyncd-1.39
+
+NOTE: during configure, modify the bindir to match how Debian does it
+	./configure --bindir=/usr/bin
+	make
+
+Become root, if you're not already, and install it
+	make install
+--------------
+
+Create a user to sync with, should be the same as the one on the server
+        useradd -U -m -d /home/USER -p PASSWORD -s /bin/bash USER
+
+Verfiy the account was created, and setup a sync directory to sync with
+	su - USER
+	mkdir ~/sync
+
+Install lipsync (if installing from git, first apt-get git-core)
+	cd lipsync
+	chmod +x setup
+
+Run setup
+NOTE: during setup, define server IP, SSH port, paths, username and password
+	./setup.sh
+
+After you've answered the questions, watch for errors.
+
+
+
+=========================
+|	  TEST		|	
+=========================
+
+Open 3 terminals
+
+Terminal 1 - on the client, become root and watch the logfile
+	su - root
+	tail -f /var/log/lipsyncd.log
+
+Terminal 2 - on the client, become your normal user
+	su - USER
+
+Terminal 3 -  on the server, run a watch on the sync directory
+	watch ls -l /home/USER/sync
+NOTE: this terminal will refresh every 2s by default
+
+Terminal 2 - on the client, create a new file in the sync directory
+	touch sync/testfile
+
+At this point you should see action on the logfile (Terminal 1), and after a 
+few seconds delay, the file should appear in the server's sync directory 
+(Terminal 2). If this worked, then delete the file on the client (Terminal 2)
+and see if that change propogates to the server (Terminal 3). 
+
+Now try more complex situations by using directories that are full of other 
+files, then file or directory names with spaces in them, then ones with special 
+characters (!@#$%^&*_-) in them. These should all work the same as the initial 
+examples, always propogating to the server after a slight delay (the delay 
+occurs so lsyncd can prevent spinning up for every little change - if there are
+other changes after the first one they will be chained to the one sync, making
+things more efficient)
+
+
+
+=========================
+| INSTALL MORE CLIENTS	|	
+=========================
+
+Now that you have a working 2 node setup, it's time to install on more clients.
+All you need to do is follow the CLIENT INSTALL directions on each client you
+want to add. Be sure to answer the questions with the same SERVER, this way
+unison will work in a star style setup, with the server being the hub, and the
+clients all serving as spokes. This way the hub 'wins' if it has something the
+spokes need, but will sync-up by deleting any missing files from the spoke in
+the hub. It sounds more complicated that it is.
+</p>
+<h2>License</h2>
+<p>Copyright (c) 2010, Phil Cryer
+All rights reserved.
+
+Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+
+Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
+Neither the name of the <ORGANIZATION> nor the names of its contributors may be used to endorse or promote products derived from this software without specific prior written permission.
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.</p>
+<h2>Authors</h2>
+<p>Phil Cryer (phil@cryer.us)
+<br/>
+<br/>      </p>
+<h2>Contact</h2>
+<p>phil.cryer (phil@cryer.us)
+<br/>      </p>
+
+
+    <h2>Download</h2>
+    <p>
+      You can download this project in either
+      <a href="http://github.com/philcryer/lipsync/zipball/master">zip</a> or
+      <a href="http://github.com/philcryer/lipsync/tarball/master">tar</a> formats.
+    </p>
+    <p>You can also clone the project with <a href="http://git-scm.com">Git</a>
+      by running:
+      <pre>$ git clone git://github.com/philcryer/lipsync</pre>
+    </p>
+
+    <div class="footer">
+      get the source code on GitHub : <a href="http://github.com/philcryer/lipsync">philcryer/lipsync</a>
+    </div>
+
+  </div>
+
+  <script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+try {
+var pageTracker = _gat._getTracker("UA-575276-25");
+pageTracker._trackPageview();
+} catch(err) {}</script>
+</body>
+</html>
+
