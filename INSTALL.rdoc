@@ -20,26 +20,27 @@ Verfiy the account was created, and setup a sync directory to sync with
 	mkdir ~/sync
 
 
-==CLIENT INSTALL
-Install required software
+== CLIENT INSTALL
 
-=== Debian (squeeze)
+=== Install required software
+
+==== Debian (squeeze)
 	apt-get install openssh-client rsync unison2.27.57 lsycnd
 
 NOTE: Debian users can skip down to 'Create a user to sync with...'
 
-=== Ubuntu (karmic)
+==== Ubuntu (karmic)
 	apt-get install openssh-client rsync unison
 
 NOTE: lsyncd isn't in Ubuntu's repo, so if you're in Ubuntu have to build it
 
-Install build tools
+=== Install build tools
 
 Install lsyncd (Ubuntu)
 	apt-get install libxml2-dev build-essential
 
 Get the lsyncd code (get the latest from http://lsyncd.googlecode.com)
-wget http://lsyncd.googlecode.com/files/lsyncd-1.39.tar.gz
+	wget http://lsyncd.googlecode.com/files/lsyncd-1.39.tar.gz
 	tar -zxf lsyncd-1.39.tar.gz
 	cd lsyncd-1.39
 
@@ -70,26 +71,27 @@ After you've answered the questions, watch for errors and check the logs to see 
 	tail -f /var/log/lipsyncd.log
 
 = Test
-Open 3 terminals
 
-Terminal 1 - on the client, become root and watch the logfile
+== Open 3 terminals
+
+=== Terminal 1 - on the client, become root and watch the logfile
 	su - root
 	tail -f /var/log/lipsyncd.log
 
-Terminal 2 - on the client, become your normal user
+=== Terminal 2 - on the client, become your normal user
 	su - USER
 
-Terminal 3 -  on the server, run a watch on the sync directory
+=== Terminal 3 -  on the server, run a watch on the sync directory
 	watch ls -l /home/USER/sync
 NOTE: this terminal will refresh every 2s by default
 
-Terminal 2 - on the client, create a new file in the sync directory
+=== Terminal 2 - on the client, create a new file in the sync directory
 	touch sync/testfile
 
 At this point you should see action on the logfile (Terminal 1), and after a few seconds delay, the file should appear in the server's sync directory (Terminal 2). If this worked, then delete the file on the client (Terminal 2) and see if that change propogates to the server (Terminal 3). 
 
 Now try more complex situations by using directories that are full of other files, then file or directory names with spaces in them, then ones with special characters (!@#$%^&*_-) in them. These should all work the same as the initial examples, always propogating to the server after a slight delay (the delay occurs so lsyncd can prevent spinning up for every little change - if there are other changes after the first one they will be chained to the one sync, making things more efficient)
 
-== Install more clients
+= Install more clients
 Now that you have a working 2 node setup, it's time to install on more clients. All you need to do is follow the same client install directions on each client you add. Be sure to use the same server IP or domainname, this way Unison will work in a star style setup, with the server being the hub, and the clients all serving as spokes. This way the hub 'wins' if it has something the spokes need, but will sync-up by deleting any missing files from the spoke in the hub. It sounds more complicated than it is, but suffice to say, it works.
 
