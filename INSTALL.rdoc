@@ -3,12 +3,13 @@
 To get started with lipsync you need at least a client and a server, perferably on multiple systems
 
 == Server install
-Install required software
 
-=== Debian (squeeze) 
+===Install required software
+
+==== Debian (squeeze) 
 	apt-get install openssh-server rsync unison2.27.57
 
-=== Ubuntu (karmic)
+==== Ubuntu (karmic)
 	apt-get install openssh-server rsync unison
 
 Create a user to sync with, should be the same name as the one on the client 
