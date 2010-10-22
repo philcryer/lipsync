@@ -1,4 +1,4 @@
-= Install :: lipsync
+= INSTALL
 
 To get started with lipsync you need at least a client and a server, perferably on multiple systems
 
