@@ -1,4 +1,4 @@
-= Install
+= Install :: lipsync
 
 To get started with lipsync you need at least a client and a server, perferably on multiple systems
 
@@ -19,7 +19,6 @@ Verfiy the account was created, and setup a sync directory to sync with
 	su - USER
 	mkdir ~/sync
 
-
 == CLIENT INSTALL
 
 === Install required software
@@ -35,11 +34,10 @@ NOTE: Debian users can skip down to 'Create a user to sync with...'
 NOTE: lsyncd isn't in Ubuntu's repo, so if you're in Ubuntu have to build it
 
 === Install build tools
-
-Install lsyncd (Ubuntu)
 	apt-get install libxml2-dev build-essential
 
-Get the lsyncd code (get the latest from http://lsyncd.googlecode.com)
+=== Install lsyncd 
+Get the latest from http://lsyncd.googlecode.com
 	wget http://lsyncd.googlecode.com/files/lsyncd-1.39.tar.gz
 	tar -zxf lsyncd-1.39.tar.gz
 	cd lsyncd-1.39
@@ -94,4 +92,3 @@ Now try more complex situations by using directories that are full of other file
 
 = Install more clients
 Now that you have a working 2 node setup, it's time to install on more clients. All you need to do is follow the same client install directions on each client you add. Be sure to use the same server IP or domainname, this way Unison will work in a star style setup, with the server being the hub, and the clients all serving as spokes. This way the hub 'wins' if it has something the spokes need, but will sync-up by deleting any missing files from the spoke in the hub. It sounds more complicated than it is, but suffice to say, it works.
-
