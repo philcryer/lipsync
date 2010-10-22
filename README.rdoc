@@ -25,7 +25,7 @@ To get started with lipsync you need at least a client and a server, perferably 
 	cd lipsync.git
 	chmod +x setup.sh
 	./setup.sh
-see the {INSTALL}[http://github.com/philcryer/lipsync/blob/master/INSTALL] file for full documentation
+see the {INSTALL}[http://github.com/philcryer/lipsync/blob/master/INSTALL.rdoc] file for full documentation
 
 == License
 lipsync is licensed as open source software under the {Simplified BSD License}[http://www.opensource.org/licenses/bsd-license.php]
