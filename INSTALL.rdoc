@@ -21,7 +21,7 @@ Verfiy the account was created, and setup a sync directory to sync with
 === Install required software
 
 ==== Debian (squeeze) / Ubuntu (maverick)
-	apt-get install openssh-client rsync unison lsycnd
+	apt-get install openssh-client rsync unison lsyncd
 
 Create a user to sync with, should be the same as the one on the server
         useradd -U -m -d /home/USER -p PASSWORD -s /bin/bash USER
