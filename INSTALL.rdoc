@@ -1,4 +1,4 @@
-= INSTALL
+= INSTALL - lipsync
 
 To get started with lipsync you need at least a client and a server, perferably on multiple systems
 
@@ -6,10 +6,7 @@ To get started with lipsync you need at least a client and a server, perferably 
 
 ===Install required software
 
-==== Debian (squeeze) 
-	apt-get install openssh-server rsync unison2.27.57
-
-==== Ubuntu (karmic)
+==== Debian (squeeze) / Ubuntu (maverick)
 	apt-get install openssh-server rsync unison
 
 Create a user to sync with, should be the same name as the one on the client 
@@ -19,35 +16,12 @@ Verfiy the account was created, and setup a sync directory to sync with
 	su - USER
 	mkdir ~/sync
 
-== CLIENT INSTALL
+== Client install
 
 === Install required software
 
-==== Debian (squeeze)
-	apt-get install openssh-client rsync unison2.27.57 lsycnd
-
-NOTE: Debian users can skip down to 'Create a user to sync with...'
-
-==== Ubuntu (karmic)
-	apt-get install openssh-client rsync unison
-
-NOTE: lsyncd isn't in Ubuntu's repo, so if you're in Ubuntu have to build it
-
-=== Install build tools
-	apt-get install libxml2-dev build-essential
-
-=== Install lsyncd 
-Get the latest from http://lsyncd.googlecode.com
-	wget http://lsyncd.googlecode.com/files/lsyncd-1.39.tar.gz
-	tar -zxf lsyncd-1.39.tar.gz
-	cd lsyncd-1.39
-
-NOTE: during configure, modify the bindir to match how Debian does it
-	./configure --bindir=/usr/bin
-	make
-
-Become root, if you're not already, and install it
-	make install
+==== Debian (squeeze) / Ubuntu (maverick)
+	apt-get install openssh-client rsync unison lsycnd
 
 Create a user to sync with, should be the same as the one on the server
         useradd -U -m -d /home/USER -p PASSWORD -s /bin/bash USER
@@ -60,12 +34,12 @@ Install lipsync (if installing from git, first apt-get git-core)
 	cd lipsync
 	chmod +x setup
 
-Then run the setup script
+NOTE: during setup, define server IP, path to sync, username and password, so have those ready
 
-NOTE: during setup, define server IP, SSH port, paths, username and password
+Then run the setup script
 	./setup.sh
 
-After you've answered the questions, watch for errors and check the logs to see if lipsyncd started successfully 
+After you've answered the questions, watch the script's output for errors. Then, check the logs to see if lipsyncd started successfully 
 	tail -f /var/log/lipsyncd.log
 
 = Test
