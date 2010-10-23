@@ -88,7 +88,11 @@ ssh.keygen(){
 	
 	echo "* Transferring ssh key for ${username} to ${remote_server} (login as $username now)..."; 
 	#echo -n "	NOTE: you will be prompted to login..."
-	su ${username} -c "ssh-copy-id ${remote_server}" >> /dev/null
+	#su ${username} -c "ssh-copy-id ${remote_server}" >> /dev/null
+
+	# ssh-copy-id -i  id_rsa.pub terry@host2
+	su ${username} -c "ssh-copy-id -i /home/${username}/.ssh/id_dsa.pub ${username}@${remote_server}" >> /dev/null
+
 	# ssh-copy-id ${remote_server}
 	if [ $? -eq 0 ]; then
 		X=0	#echo "done"
@@ -97,7 +101,7 @@ ssh.keygen(){
 	fi
 	echo -n "* Setting permissions on the ssh key for ${username} on ${remote_server}..."; 
 	#echo -n "	NOTE: you should not be prompted to login..."
-	su ${username} -c "ssh ${remote_server} 'chmod 700 .ssh'"
+	su ${username} -c "SSH_AUTH_SOCK=0 ssh ${remote_server} 'chmod 700 .ssh'"
 	#ssh ${remote_server} 'chmod 700 .ssh'
 	if [ $? -eq 0 ]; then
 		echo "done"
@@ -133,7 +137,8 @@ build.conf(){
 	sed 's|LSLOCDIR|'$lipsync_dir_local/'|g' etc/lipsyncd.conf.xml > /tmp/lipsyncd.conf.xml.01
 	sed 's|LSUSER|'$username'|g' /tmp/lipsyncd.conf.xml.01 > /tmp/lipsyncd.conf.xml.02
 	#sed 's|PORT|'$port'|g' /tmp/lipsyncd.conf.xml.02 > /tmp/lipsyncd.conf.xml.03
-	sed 's|LSREMSERV::LSREMDIR/|'ssh://$remote_server://$lipsync_dir_remote/'|g' /tmp/lipsyncd.conf.xml.02 > /tmp/lipsyncd.conf.xml
+	sed 's|LSREMSERV|'$remote_server'|g' /tmp/lipsyncd.conf.xml.02 > /tmp/lipsyncd.conf.xml.03
+	sed 's|LSREMDIR|'$lipsync_dir_remote'|g' /tmp/lipsyncd.conf.xml.03 > /tmp/lipsyncd.conf.xml
 	echo "done"
 }
 
@@ -174,7 +179,7 @@ deploy(){
 ########################
 	echo -n "	> installing docs /usr/share/doc/lipsync..."
 	mkdir /usr/share/doc/lipsync
-	cp README INSTALL LICENSE /usr/share/doc/lipsync
+	cp README* INSTALL* LICENSE /usr/share/doc/lipsync
 	echo "done"
 ########################
 	echo -n "	> preparing logfile /var/log/lipsyncd.log..."
@@ -186,12 +191,14 @@ deploy(){
 ########################
 	echo -n "	> enabling unison for $username..."
 	sed 's|LSLOCDIR|'$lipsync_dir_local/'|g' unison/lipsync.prf > /tmp/lipsync.prf.01
-	sed 's|LSUSER|'$username'|g' /tmp/lipsync.prf.01 > /tmp/lipsync.prf.02
+	sed 's|LSUSER|'${username}'|g' /tmp/lipsync.prf.01 > /tmp/lipsync.prf.02
 	sed 's|LSREMDIR|'$lipsync_dir_remote'|g' /tmp/lipsync.prf.02 > /tmp/lipsync.prf.03
 	sed 's|LSREMSERV|'$remote_server'|g' /tmp/lipsync.prf.03 > /tmp/lipsync.prf
-	mkdir ~/$username/.unison
-	cp /tmp/lipsync.prf ~/$username/.unison/
-	chown -R $username:$username ~/$username/.unison/
+	if [ ! -d "/home/${username}/.unison" ]; then
+		mkdir /home/${username}/.unison
+	fi
+	cp /tmp/lipsync.prf /home/${username}/.unison/
+	chown -R ${username}:${username} /home/${username}/.unison/
 	rm /tmp/lipsync.*
 	echo "done"
 ########################
