@@ -1,3 +1,2 @@
 # have lipsync sync with the server every 30 minutes to catch changes from other nodes
 09,39 *     * * *     LSUSER	/usr/bin/lipsyncd
-#/usr/bin/lipsync -ltd --delete --rsh="ssh -l LSUSER -p PORT" LSLOCDIR/ LSREMSERV:LSREMDIR/

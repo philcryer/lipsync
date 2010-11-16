@@ -2,7 +2,7 @@
 # Name : setup.sh
 # Author : Phil Cryer <phil@cryer.us>
 # Site : http://github.com/philcryer/lipsync
-# Desc : This script sets up lipsync 
+# Desc : This script sets up the lipsync service
 
 clear
 stty erase '^?'
@@ -53,10 +53,10 @@ questions(){
 	echo -n "	- IP or domainname for server: "
 	read remote_server
 
-#	echo -n "	- SSH port on server (default is 22): "
-#	read port
+	echo -n "	- SSH port on server (default is 22): "
+	read port
 	
-	echo -n "	- lipsync username (must exist on the client and server): "
+	echo -n "	- username (must exist on the client and server): "
     	read username
     
 	echo -n "	- lipsync local directory (local directory to be synced): "
@@ -68,7 +68,6 @@ questions(){
 
 ssh.keygen(){
 	if [ -f '/home/${username}/.ssh/id_dsa' ]; then
-		#echo -n "* Existing SSH key found for ${username} backing up..."
 		echo "* Existing SSH key found for ${username} backing up..."
 		mv /home/${username}/.ssh/id_dsa /home/${username}/.ssh/id_dsa-OLD
 		if [ $? -eq 0 ]; then
@@ -136,9 +135,9 @@ build.conf(){
 	echo -n "* Creating lipsyncd.conf.xml for ${username}..."
 	sed 's|LSLOCDIR|'$lipsync_dir_local/'|g' etc/lipsyncd.conf.xml > /tmp/lipsyncd.conf.xml.01
 	sed 's|LSUSER|'$username'|g' /tmp/lipsyncd.conf.xml.01 > /tmp/lipsyncd.conf.xml.02
-	#sed 's|PORT|'$port'|g' /tmp/lipsyncd.conf.xml.02 > /tmp/lipsyncd.conf.xml.03
-	sed 's|LSREMSERV|'$remote_server'|g' /tmp/lipsyncd.conf.xml.02 > /tmp/lipsyncd.conf.xml.03
-	sed 's|LSREMDIR|'$lipsync_dir_remote'|g' /tmp/lipsyncd.conf.xml.03 > /tmp/lipsyncd.conf.xml
+	sed 's|LPORT|'$port'|g' /tmp/lipsyncd.conf.xml.02 > /tmp/lipsyncd.conf.xml.03
+	sed 's|LSREMSERV|'$remote_server'|g' /tmp/lipsyncd.conf.xml.03 > /tmp/lipsyncd.conf.xml.04
+	sed 's|LSREMDIR|'$lipsync_dir_remote'|g' /tmp/lipsyncd.conf.xml.04 > /tmp/lipsyncd.conf.xml
 	echo "done"
 }
 
@@ -164,12 +163,12 @@ deploy(){
 	echo "done"
 ########################
 	echo -n "	> installing /etc/cron.d/lipsync..."
-	sed 's|LSUSER|'$username'|g' etc/cron.d/lipsync > /tmp/lipsync.01
+	sed 's|LSUSER|'$username'|g' etc/cron.d/lipsync > /etc/cron.d/lipsync
 	#sed 's|PORT|'$port'|g' /tmp/lipsync.01 > /tmp/lipsync.02
-	sed 's|LSLOCDIR|'$lipsync_dir_local'|g' /tmp/lipsync.01 > /tmp/lipsync.02
-	sed 's|LSREMDIR|'$lipsync_dir_remote'|g' /tmp/lipsync.02 > /tmp/lipsync.03
-	sed 's|LSREMSERV|'$remote_server'|g' /tmp/lipsync.03 > /etc/cron.d/lipsync
-	rm /tmp/lipsync.*
+	#sed 's|LSLOCDIR|'$lipsync_dir_local'|g' /tmp/lipsync.01 > /tmp/lipsync.02
+	#sed 's|LSREMDIR|'$lipsync_dir_remote'|g' /tmp/lipsync.02 > /tmp/lipsync.03
+	#sed 's|LSREMSERV|'$remote_server'|g' /tmp/lipsync.03 > /etc/cron.d/lipsync
+	#rm /tmp/lipsync.*
 	echo "done"
 ########################
 	echo -n "	> installing /etc/lipsyncd.conf.xml..."
@@ -193,8 +192,12 @@ deploy(){
 	sed 's|LSLOCDIR|'$lipsync_dir_local/'|g' unison/lipsync.prf > /tmp/lipsync.prf.01
 	sed 's|LSUSER|'${username}'|g' /tmp/lipsync.prf.01 > /tmp/lipsync.prf.02
 	sed 's|LSREMDIR|'$lipsync_dir_remote'|g' /tmp/lipsync.prf.02 > /tmp/lipsync.prf.03
-	sed 's|LSREMSERV|'$remote_server'|g' /tmp/lipsync.prf.03 > /tmp/lipsync.prf
+	sed 's|LPORT|'$port'|g' /tmp/lipsync.prf.03 > /tmp/lipsync.prf.04
+	sed 's|LSREMSERV|'$remote_server'|g' /tmp/lipsync.prf.04 > /tmp/lipsync.prf
 	if [ ! -d "/home/${username}/.unison" ]; then
+		mkdir /home/${username}/.unison
+	else
+		mv /home/${username}/.unison /home/${username}/.unison-old
 		mkdir /home/${username}/.unison
 	fi
 	cp /tmp/lipsync.prf /home/${username}/.unison/
@@ -210,9 +213,9 @@ uninstall(){
 	/etc/init.d/lipsyncd stop >> /dev/null 
 	echo "done"
 	
-	#echo -n "	NOTICE: disabling lipsync for user..."
-	#rm -f /home/$username/.lipsyncd
-	#echo "done"
+	echo -n "	NOTICE: disabling lipsync for user..."
+	rm -f /home/$username/.unison
+	echo "done"
 
 	echo -n "	NOTICE: removing lipsync user and group..."
 	userdel lipsync
@@ -259,6 +262,10 @@ echo "lipsync setup complete, staring lipsync..."
 #	echo "done"
 if [ -f /var/run/lipsyncd.pid ]; then
 	echo "	NOTICE: lipsyncd is running as pid `cat /var/run/lipsyncd.pid`"
+	echo "	Check /var/log/lipsyncd.log for details"
+else
+	echo "	NOTICE: lipsyncd failed to start..."
+	echo "	Check /var/log/lipsyncd.log for details"
 fi
 ###############################################################################
 

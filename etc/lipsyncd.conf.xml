@@ -62,7 +62,7 @@ This is a default config file template for lsyncd.
 
 <directory>
 	<source path="LSLOCDIR"/>
-	<target path="ssh://LSREMSERV://LSREMDIR/"/>
+	<target path="ssh://LSREMSERV:LPORT//LSREMDIR/"/>
 	<!-- 
 	or it can also be an absolute path for localhost 
 	<target path="/absolute/path/to/target">
