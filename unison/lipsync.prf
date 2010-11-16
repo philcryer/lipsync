@@ -9,4 +9,4 @@ ignore = Name *~
 ignore = Name *.tmp
 
 root = LSLOCDIR
-root = ssh://LSUSER@LSREMSERV/LSREMDIR
+root = ssh://LSUSER@LSREMSERV:LPORT/LSREMDIR
