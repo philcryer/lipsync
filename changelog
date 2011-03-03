@@ -1,0 +1,10 @@
+
+-----
+20110303 applied changes submitted by robert@....com
+-----
+Looks like a great idea for a drop box replacement. Found a small issue.  Your
+setup script asks for a port number for us nonstandard guys, yet doesn't use
+it for the setup. Here is the corrected setup that works for me.  Also I had
+to go in manually and change permissions on the client since the id_dsa* had
+all been created with root ownership (chown -R sync:sync /home/sync/.ssh/)
+Might want to add that to your script as well.
