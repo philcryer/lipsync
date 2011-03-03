@@ -79,18 +79,18 @@ ssh.keygen(){
 	echo -n "* Creating new SSH key for ${username}..."
 	ssh-keygen -q -N '' -f /home/${username}/.ssh/id_dsa
 	if [ $? -eq 0 ]; then
-		chown $username:$username /home/${username}/.ssh
+		chown -R $username:$username /home/${username}/.ssh
 		echo "done"
 	else
 		echo; echo "	ERROR: there was an error generating the ssh key"; exit 1
 	fi
 	
-	echo "* Transferring ssh key for ${username} to ${remote_server} (login as $username now)..."; 
+	echo "* Transferring ssh key for ${username} to ${remote_server} on port ${port} (login as $username now)..."; 
 	#echo -n "	NOTE: you will be prompted to login..."
 	#su ${username} -c "ssh-copy-id ${remote_server}" >> /dev/null
 
 	# ssh-copy-id -i  id_rsa.pub terry@host2
-	su ${username} -c "ssh-copy-id -i /home/${username}/.ssh/id_dsa.pub ${username}@${remote_server}" >> /dev/null
+	su ${username} -c "ssh-copy-id -i /home/${username}/.ssh/id_dsa.pub '-p ${port} ${username}@${remote_server}'" >> /dev/null
 
 	# ssh-copy-id ${remote_server}
 	if [ $? -eq 0 ]; then
@@ -98,14 +98,14 @@ ssh.keygen(){
 	else
 		echo; echo "	ERROR: there was an error transferring the ssh key"; exit 1
 	fi
-	echo -n "* Setting permissions on the ssh key for ${username} on ${remote_server}..."; 
+	echo -n "* Setting permissions on the ssh key for ${username} on ${remote_server} on port ${port}..."; 
 	#echo -n "	NOTE: you should not be prompted to login..."
-	su ${username} -c "SSH_AUTH_SOCK=0 ssh ${remote_server} 'chmod 700 .ssh'"
+	su ${username} -c "SSH_AUTH_SOCK=0 ssh ${remote_server} -p ${port} 'chmod 700 .ssh'"
 	#ssh ${remote_server} 'chmod 700 .ssh'
 	if [ $? -eq 0 ]; then
 		echo "done"
 	else
-		echo; echo "	ERROR: there was an error setting permissions on the ssh key for ${username} on ${remote_server}..."; exit 1
+		echo; echo "	ERROR: there was an error setting permissions on the ssh key for ${username} on ${remote_server} on port ${port}..."; exit 1
 	fi
 }
 
