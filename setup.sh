@@ -28,7 +28,8 @@ echo -n "* Checking if the installer supports this system..."
 if [ `cat /etc/issue.net | cut -d' ' -f1` == "Debian" ] || [ `cat /etc/issue.net | cut -d' ' -f1` == "Ubuntu" ];then
 	echo "ok"
 else
-	echo; echo "	ERROR: this installer currently does not support your system; try a manual install instead"; exit 1
+	echo; echo "	ERROR: this installer currently does not support your system,"
+	echo       "	but you can try, it could work (tm) - let us know if it does"
 fi
 ###############################################################################
 
