@@ -1,0 +1,15 @@
+#!/bin/sh -e
+# Distributed under the terms of the BSD License.
+# Copyright (c) 2011 Phil Cryer phil.cryer@gmail.com
+# Source https://github.com/philcryer/lipsync
+
+PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
+CONF_FILE=/etc/lipsyncd
+
+if [[ -e $CONF_FILE ]]; then
+	. $CONF_FILE
+fi
+
+lsyncd --conf /etc/lipsyncd.conf.xml 
+
+exit 0

@@ -1,3 +1,0 @@
-#!/bin/bash
-#/usr/bin/lsyncd --conf /etc/lipsyncd.conf.xml
-/usr/bin/lsyncd --conf /etc/lipsyncd.conf.xml --debug
