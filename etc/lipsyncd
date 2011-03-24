@@ -1,0 +1,9 @@
+#!/bin/sh -e
+# Distributed under the terms of the BSD License.
+# Copyright (c) 2011 Phil Cryer phil.cryer@gmail.com
+# Source https://github.com/philcryer/lipsync
+ 
+USER_NAME=phil
+LOCAL_DIR=/home/phil/sync
+REMOTE_HOST=64.34.219.15
+REMOTE_DIR=/home/phil/sync/
