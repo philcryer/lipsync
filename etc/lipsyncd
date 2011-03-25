@@ -3,7 +3,8 @@
 # Copyright (c) 2011 Phil Cryer phil.cryer@gmail.com
 # Source https://github.com/philcryer/lipsync
  
-USER_NAME=phil
-LOCAL_DIR=/home/phil/sync
-REMOTE_HOST=64.34.219.15
-REMOTE_DIR=/home/phil/sync/
+USER_NAME=LSUSER
+LOCAL_DIR=LSLOCDIR
+REMOTE_HOST=LSREMSERV
+REMOTE_DIR=LSREMDIR
+SSH_PORT=LSPORT

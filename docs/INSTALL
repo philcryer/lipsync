@@ -7,7 +7,7 @@ To get started with lipsync you need at least a client and a server, perferably 
 ===Install required software
 
 ==== Debian (squeeze) / Ubuntu (maverick)
-	apt-get install openssh-server rsync unison
+	apt-get install openssh-server rsync
 
 Create a user to sync with, should be the same name as the one on the client 
 	useradd -U -m -d /home/USER -p PASSWORD -s /bin/bash USER
@@ -17,6 +17,31 @@ Verfiy the account was created, and setup a sync directory to sync with
 	mkdir ~/sync
 
 == Client install
+
+Ubuntu (lsyncd 2.0.x)
+apt-get install lua5.1 liblua5.1-0-dev liblua50-dev liblualib50-dev
+
+wget http://lsyncd.googlecode.com/files/lsyncd-2.0.3.tar.gz
+tar -zxf lsyncd-2.0.3.tar.gz 
+cd lsyncd-2.0.3.tar.gz
+./configure
+
+
+Debian (Wheezy and above) (lsyncd 2.0.x)
+apt-get install lsyncd
+
+
+Uninstall/remove
+/etc/init.d/lipsyncd
+/etc/lipsyncd.conf.xml
+/usr/local/bin/lsyncd
+/usr/bin/lsync*
+/usr/bin/lipsync
+
+
+new CRON:
+
+ rsync -r -a -v -e "ssh -l phil" --delete 64.34.219.15:/home/phil/sync/ /home/phil/sync/
 
 === Install required software
 

@@ -1,5 +1,10 @@
-#! /bin/sh
-#
+#!/bin/sh -e
+# Distributed under the terms of the BSD License.
+# Copyright (c) 2011 Phil Cryer phil.cryer@gmail.com
+# Source https://github.com/philcryer/lipsync
+
+PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
+
 ### BEGIN INIT INFO
 # Provides:          lipsyncd
 # Required-Start:    $syslog $local_fs
@@ -8,21 +13,28 @@
 # Should-Stop:       dbus avahi
 # Default-Start:     2 3 4 5
 # Default-Stop:      1
-# Short-Description: a service that provides command-line, Dropbox like syncing
+# Short-Description: a service that provides automated, command-line syncing
 ### END INIT INFO
-# /etc/init.d/lipsyncd start and stop lipsyncd daemon 
-# Phil Cryer, phil@cryer.us
 
-PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
-DAEMON=/usr/bin/lipsyncd
+DAEMON=/usr/local/bin/lipsyncd
 NAME=lipsyncd
-DESC="a service that provides command-line, Dropbox like syncing"
+DESC="a service that provides command-line, automated syncing between systems"
 LOGFILE=/var/log/lipsyncd.log
+PIDFILE=/var/run/lipsyncd.pid
+LOGLEVEL=all
+DELAY_SEC=2
+
+CONF_FILE=/etc/lipsyncd
 
 test -x $DAEMON || exit 0
 
+# Include user lipsyncd details if available
+if [[ -e $CONF_FILE ]]; then
+        . $CONF_FILE
+fi
+
 RUN=yes
-RUN_AS_USER=LSUSER
+RUN_AS_USER=$USER_NAME
 
 # Include lipsyncd defaults if available
 if [ -f /etc/default/lipsyncd ] ; then
@@ -42,19 +54,18 @@ case "$1" in
 	echo -n "Starting $NAME daemon"
 #	start-stop-daemon --start --quiet --pidfile /var/run/$NAME.pid \
 #		--exec $DAEMON -- $DAEMON_OPTS
-	su $RUN_AS_USER -c "/usr/bin/lsyncd --conf /etc/lipsyncd.conf.xml --debug"
-#	echo "$NAME."
-	echo "."; echo "====== lipsyncd started on `date` =====" >> $LOGFILE
-	
-	echo `ps -fe | grep "/usr/bin/lsyncd" | grep -v grep | cut -d' ' -f7` > /var/run/$NAME.pid
+	su $RUN_AS_USER -c "$DAEMON -log $LOGLEVEL -delay $DELAY_SEC -logfile $LOGFILE -pidfile $PIDFILE -rsyncssh $LOCAL_DIR $REMOTE_HOST $REMOTE_DIR"
+	echo "done"
+	echo `ps -fe | grep "/usr/local/bin/lsyncd" | grep -v grep | cut -d' ' -f7` > /var/run/$NAME.pid
+	echo "====== lipsyncd (pid `cat /var/run/$NAME.pid`) started on `date` =====" >> $LOGFILE
 	;;
   stop)
 	echo -n "Stopping $NAME daemon"
 	#start-stop-daemon --stop --oknodo --quiet --pidfile /var/run/$NAME.pid \ --exec $DAEMON
 	`killall lsyncd`
 	rm /var/run/$NAME.pid
-	#echo "$NAME."
-	echo "."; echo "====== lipsyncd stopped on `date` =====" >> $LOGFILE
+	echo "====== lipsyncd stopped on `date` =====" >> $LOGFILE
+	echo "done"
 	;;
   force-reload)
 	# check whether $DAEMON is running. If so, restart
