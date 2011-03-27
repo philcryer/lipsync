@@ -7,6 +7,7 @@ ignore = Name *.DS_Store
 ignore = Name Thumbs.db
 ignore = Name *~
 ignore = Name *.tmp
+follow = Regex .*
 
 root = LSLOCDIR
 root = ssh://LSUSER@LSREMSERV:LPORT/LSREMDIR
