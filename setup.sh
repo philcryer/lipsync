@@ -210,6 +210,7 @@ deploy(){
 	if [ ! -d "/home/${username}/.unison" ]; then
 		mkdir /home/${username}/.unison
 	else
+		rm -fR /home/${username}/.unison-old
 		mv /home/${username}/.unison /home/${username}/.unison-old
 		mkdir /home/${username}/.unison
 	fi
@@ -217,6 +218,15 @@ deploy(){
 	chown -R ${username}:${username} /home/${username}/.unison/
 	rm /tmp/lipsync.*
 	echo "done"
+########################
+	echo -n "	> creating repair_state.sh in ~/$username..."
+	sed 's|LSLOCDIR|'$lipsync_dir_local/'|g' extras/repair_state.sh > /tmp/repair_state.sh.01
+	sed 's|LSUSER|'${username}'|g' /tmp/repair_state.sh.01 > /tmp/repair_state.sh.02
+	sed 's|LSREMDIR|'$lipsync_dir_remote'|g' /tmp/repair_state.sh.02 > /tmp/repair_state.sh.03
+	sed 's|LPORT|'$port'|g' /tmp/repair_state.sh.03 > /tmp/repair_state.sh.04
+	sed 's|LSREMSERV|'$remote_server'|g' /tmp/repair_state.sh.04 > /home/${username}/repair_state.sh
+
+	
 ########################
 	echo "lipsync installed `date`" > /var/log/lipsyncd.log
 }
