@@ -21,7 +21,7 @@ To get started with lipsync you need at least a client and a server, perferably 
 
 == Install	   
 	git clone git@github.com:philcryer/lipsync.git
-	cd lipsync.git
+	cd lipsync
 	chmod +x setup.sh
 	./setup.sh
 see the {INSTALL}[http://github.com/philcryer/lipsync/blob/master/INSTALL.rdoc] file for full documentation

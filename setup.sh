@@ -56,15 +56,27 @@ questions(){
 
 	echo -n "	- SSH port on server (default is 22): "
 	read port
+	if [ -z "$port" ]
+	then
+	  port="22"
+	fi
 	
 	echo -n "	- username (must exist on the client and server): "
     	read username
     
-	echo -n "	- lipsync local directory (local directory to be synced): "
+	echo -n "	- local directory to be synced (default is /home/$username/sync): "
 	read lipsync_dir_local
+	if [ -z "$lipsync_dir_local" ]
+	then
+	  lipsync_dir_local="/home/$username/sync"
+	fi
 
-	echo -n "	- lipsync remote directory (remote directory to be synced): "
+	echo -n "	- remote directory to be synced (default is /home/$username/sync): "
 	read lipsync_dir_remote
+	if [ -z "$lipsync_dir_remote" ]
+	then
+	  lipsync_dir_remote="/home/$username/sync"
+	fi
 }
 
 ssh.keygen(){

@@ -31,7 +31,7 @@ This is a default config file template for lsyncd.
 	<logfile      filename="/var/log/lipsyncd.log"/>
 
 	<!--Specify the rsync (or other) binary to call-->
-	<binary       filename="/usr/bin/lipsync"/>
+	<binary       filename="/usr/bin/rsync"/>
 
 	<!--uncomment to create a file containing pid of the daemon-->
 	<!--pidfile      filename="/var/run/lsyncd.pid"/-->
@@ -62,7 +62,7 @@ This is a default config file template for lsyncd.
 
 <directory>
 	<source path="LSLOCDIR"/>
-	<target path="ssh://LSREMSERV:LPORT//LSREMDIR/"/>
+	<target path="LSREMSERV:LSREMDIR/"/>
 	<!-- 
 	or it can also be an absolute path for localhost 
 	<target path="/absolute/path/to/target">

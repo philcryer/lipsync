@@ -23,6 +23,8 @@ Verfiy the account was created, and setup a sync directory to sync with
 ==== Debian (squeeze) / Ubuntu (maverick)
 	apt-get install openssh-client rsync unison lsyncd
 
+Please make sure that lsyncd installed is version 1.x and not version 2.x as it uses different config files.
+
 Create a user to sync with, should be the same as the one on the server
         useradd -U -m -d /home/USER -p PASSWORD -s /bin/bash USER
 
@@ -31,13 +33,14 @@ Verfiy the account was created, and setup a sync directory to sync with
 	mkdir ~/sync
 
 Install lipsync (if installing from git, first apt-get git-core)
+	git clone git://github.com/philcryer/lipsync.git
 	cd lipsync
-	chmod +x setup
+	chmod +x setup.sh
 
 NOTE: during setup, define server IP, path to sync, username and password, so have those ready
 
 Then run the setup script
-	./setup.sh
+	sudo ./setup.sh
 
 After you've answered the questions, watch the script's output for errors. Then, check the logs to see if lipsyncd started successfully 
 	tail -f /var/log/lipsyncd.log
