@@ -4,7 +4,7 @@ A lightweight service that provides automated, file syncronization between multi
 
 lipsync is an open source, lightweight service that provides automated two-way, {Dropbox}[http://bit.ly/1IGiJu]-like file syncronization in Linux by utilizing {OpenSSH}[http://www.openssh.com/], {rsync}[http://rsync.samba.org/], and {lsyncd}[http://code.google.com/p/lsyncd/]. lipsync is a the realization of a popular blog post of mine named {HOWTO build your own open source dropbox clone}[http://fak3r.com/2009/09/14/howto-build-your-own-open-source-dropbox-clone/] Since I made the posting I've recieved a great deal of interest, and had time to test and architect a workable solution. Thanks to everyone that read, commented and encourged the further development of this idea!  
 
-The basic idea and example of a working system can be seen {here}[http://www.gliffy.com/publish/1601804/]
+The basic idea and example of a working system can be seen {here}[https://github.com/philcryer/lipsync/raw/master/docs/diagram.png]
 
 == Features
 - automatic file synconization from multiple clients to a central server
@@ -19,15 +19,15 @@ To get started with lipsync you need at least a client and a server, perferably 
 - Client - Linux 2.6.x, rsync (client), openssh (client), lsyncd
 
 == Mailing list
-The mailing list for the lipsync project is hosted on Google Groups, you can signup here https://groups.google.com/group/project-lipsync
+The mailing list for the lipsync project is hosted on Google Groups, signup {here}[https://groups.google.com/group/project-lipsync]
 
 == Getting started	   
 	git clone git@github.com:philcryer/lipsync.git
-	cd lipsync.git
-	chmod +x setup.sh
+	cd lipsync
+	chmod +x install.sh
 	./install.sh
 
-After that, see the docs/INSTALL file or {INSTALL}[http://github.com/philcryer/lipsync/blob/master/docs/INSTALL.rdoc] for full documentation
+After that, see the docs/INSTALL file or {INSTALL}[https://github.com/philcryer/lipsync/raw/master/docs/INSTALL] for full documentation
 
 == Caveats
 Much of the initial feedback I recived asked for a graphical user interface and support for Windows. Please know that I have attempted neither, instead deciding to focus on the basic server-side functionality. This allowed me to flesh out the architecture, deciding on all the options and understanding ways to improve the transfer performance. Since most of the software used for lipsync is cross-platform, I'd be interested in working with others that want to build a gui front end to talk to the the lipsync backend service. I've been interested in the work done on the {SparkleShare}[http://sparkleshare.org/] project, and since it can use different backends I'm hopeful that it will be agnostic enough to adapt to use lipsync.
@@ -49,9 +49,8 @@ phil (at) cryer (dot) us
 == Download
 You can download this project in either {zip}[http://github.com/philcryer/lipsync/zipball/master] or {tar}[http://github.com/philcryer/lipsync/tarball/master] formats.
 
-You can also clone the project with {Git}[http://git-scm.com/] by running:
+Or simply clone the project with {Git}[http://git-scm.com/] by running:
 
 	git clone git://github.com/philcryer/lipsync
 
 Thanks
-
