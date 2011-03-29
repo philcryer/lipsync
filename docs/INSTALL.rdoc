@@ -1,6 +1,6 @@
 = INSTALL - lipsync
 
-To get started with lipsync you need at least a client and a server, perferably on multiple systems
+To get started with lipsync you need at least a client and a server, preferably on multiple systems
 
 == Server install
 
