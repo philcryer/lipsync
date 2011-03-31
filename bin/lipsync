@@ -6,7 +6,7 @@
 PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
 CONF_FILE=/etc/lipsyncd
 
-if [[ -e $CONF_FILE ]]; then
+if [ -e $CONF_FILE ]; then
         . $CONF_FILE
 fi
 
@@ -22,7 +22,7 @@ rsync -r -a -v -e "ssh -l $USER_NAME" --delete $REMOTE_HOST:$LOCAL_DIR $REMOTE_D
 # this writes source -> destination details to /var/log/lipsyncd.log
 eval src=\${$(($# - 1))}
 eval dst=\${$#}
-echo "$src -> $dst" >> /var/log/lipsyncd.log || true
+echo "$src -> $dst" >> /home/$USER_NAME/.lipsyncd/lipsyncd.log || true
 
 # returns the exit code of rsync to lsyncd
 exit $err
