@@ -19,20 +19,18 @@ PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
 DAEMON=/usr/local/bin/lipsyncd
 NAME=lipsyncd
 DESC="a service that provides command-line, automated syncing between systems"
-LOGFILE=/var/log/lipsyncd.log
-PIDFILE=/var/run/lipsyncd.pid
-LOGLEVEL=all
+LOGLEVEL=scarce
 DELAY_SEC=2
-
 CONF_FILE=/etc/lipsyncd
 
 test -x $DAEMON || exit 0
 
-# Include user lipsyncd details if available
-if [[ -e $CONF_FILE ]]; then
+if [ -e $CONF_FILE ]; then
         . $CONF_FILE
 fi
 
+LOGFILE=/home/$USER_NAME/.$NAME/$NAME.log
+PIDFILE=/home/$USER_NAME/.$NAME/$NAME.pid
 RUN=yes
 RUN_AS_USER=$USER_NAME
 
@@ -40,6 +38,13 @@ RUN_AS_USER=$USER_NAME
 if [ -f /etc/default/lipsyncd ] ; then
     . /etc/default/lipsyncd
 fi
+
+# ensure user's log/pid dir is avail, create if not
+ if [ ! -d /home/$USER_NAME/.$NAME ]; then
+                mkdir /home/$USER_NAME/.$NAME
+        fi
+# verify sane perms on log/pid dir
+chown $USER_NAME:$USER_NAME /home/$USER_NAME/.$NAME
 
 if [ "x$RUN" != "xyes" ] ; then
     exit 0
@@ -51,41 +56,39 @@ set -e
 
 case "$1" in
   start)
-	echo -n "Starting $NAME daemon"
-#	start-stop-daemon --start --quiet --pidfile /var/run/$NAME.pid \
-#		--exec $DAEMON -- $DAEMON_OPTS
+	echo -n "Starting $NAME daemon..."
 	su $RUN_AS_USER -c "$DAEMON -log $LOGLEVEL -delay $DELAY_SEC -logfile $LOGFILE -pidfile $PIDFILE -rsyncssh $LOCAL_DIR $REMOTE_HOST $REMOTE_DIR"
 	echo "done"
-	echo `ps -fe | grep "/usr/local/bin/lsyncd" | grep -v grep | cut -d' ' -f7` > /var/run/$NAME.pid
-	echo "====== lipsyncd (pid `cat /var/run/$NAME.pid`) started on `date` =====" >> $LOGFILE
+	echo `ps -fe | grep "/usr/local/bin/lipsyncd" | grep -v grep | cut -d' ' -f7` > $PIDFILE
+	echo "====== lipsyncd (pid `cat $PIDFILE`) started on `date` =====" >> $LOGFILE
 	;;
   stop)
-	echo -n "Stopping $NAME daemon"
+	echo -n "Stopping $NAME daemon..."
 	#start-stop-daemon --stop --oknodo --quiet --pidfile /var/run/$NAME.pid \ --exec $DAEMON
-	`killall lsyncd`
-	rm /var/run/$NAME.pid
 	echo "====== lipsyncd stopped on `date` =====" >> $LOGFILE
+	rm $PIDFILE
+	`killall lipsyncd`
 	echo "done"
 	;;
   force-reload)
 	# check whether $DAEMON is running. If so, restart
 	start-stop-daemon --stop --test --quiet --pidfile \
-		/var/run/$NAME.pid --exec $DAEMON \
+		$PIDFILE --exec $DAEMON \
 	&& $0 restart \
 	|| exit 0
 	;;
   restart)
 	echo -n "Restarting $DESC: "
 	start-stop-daemon --stop --quiet --pidfile \
-		/var/run/$NAME.pid --exec $DAEMON
+		$PIDFILE --exec $DAEMON
 	sleep 1
 	start-stop-daemon --start --quiet --pidfile \
-		/var/run/$NAME.pid --exec $DAEMON -- $DAEMON_OPTS
+		$PIDFILE --exec $DAEMON -- $DAEMON_OPTS
 	echo "$NAME."
 	;;
   status)
-	if [ -s /var/run/$NAME.pid ]; then
-        	echo "$NAME is running as PID `cat /var/run/$NAME.pid`."
+	if [ -s $PIDFILE ]; then
+        	echo "$NAME is running as PID `cat $PIDFILE`."
                 exit 0
         else
            	echo "$NAME not running."

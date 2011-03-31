@@ -3,7 +3,7 @@
 # Copyright (c) 2011 Phil Cryer phil.cryer@gmail.com
 # Source https://github.com/philcryer/lipsync
  
-clear
+#clear
 stty erase '^?'
 echo "lipsync install script"
 
@@ -68,13 +68,19 @@ ssh.keygen(){
 			echo; echo "	ERROR: there was an error backing up the SSH key"; exit 1
 		fi
 	fi
-	echo -n "* Creating new SSH key for ${username}..."
-	ssh-keygen -q -N '' -f /home/${username}/.ssh/id_dsa
-	if [ $? -eq 0 ]; then
-		chown -R $username:$username /home/${username}/.ssh
-		echo "done"
+
+	echo "* Checking for an SSH key for ${username}..."
+	if [ -f /home/${username}/.ssh/id_dsa ]; then
+		echo "* Existing key found, not creating a new one..."
 	else
-		echo; echo "	ERROR: there was an error generating the ssh key"; exit 1
+		echo -n "* No existing key found, creating SSH key for ${username}..."
+		ssh-keygen -q -N '' -f /home/${username}/.ssh/id_dsa
+		if [ $? -eq 0 ]; then
+		chown -R $username:$username /home/${username}/.ssh
+			echo "done"
+		else
+			echo; echo "	ERROR: there was an error generating the ssh key"; exit 1
+		fi
 	fi
 	
 	echo "* Transferring ssh key for ${username} to ${remote_server} on port ${port} (login as $username now)..."; 
@@ -85,6 +91,7 @@ ssh.keygen(){
 	else
 		echo; echo "	ERROR: there was an error transferring the ssh key"; exit 1
 	fi
+
 	echo -n "* Setting permissions on the ssh key for ${username} on ${remote_server} on port ${port}..."; 
 	su ${username} -c "SSH_AUTH_SOCK=0 ssh ${remote_server} -p ${port} 'chmod 700 .ssh'"
 	if [ $? -eq 0 ]; then
@@ -111,7 +118,9 @@ deploy(){
 	echo "done"
 
 	echo -n "	> /usr/local/bin/lipsyncd..."
-	ln -s /usr/local/bin/lsyncd /usr/local/bin/lipsyncd
+	if [ ! -h  /usr/local/bin/lsyncd ]; then
+		ln -s /usr/local/bin/lsyncd /usr/local/bin/lipsyncd
+	fi
 	echo "done"
 
 	echo -n "	> /etc/init.d/lipsyncd..."
@@ -127,15 +136,29 @@ deploy(){
 	echo "done"
 
 	echo -n "	> /usr/share/doc/lipsyncd..."
-	if [! -d '/usr/share/doc/lipsyncd' ]; then
+	if [ ! -d /usr/share/doc/lipsyncd ]; then
 		mkdir /usr/share/doc/lipsyncd
 	fi
-	cp README* INSTALL* LICENSE uninstall.sh doc/* /usr/share/doc/lipsyncd
+	cp README* LICENSE uninstall.sh docs/* /usr/share/doc/lipsyncd
 	echo "done"
 
-	echo -n "	> /var/log/lipsyncd.log..."
+	echo -n "	> /home/$username/.lipsyncd..."
+ 	if [ ! -d /home/$username/.lipsyncd ]; then
+        	mkdir /home/$username/.lipsyncd
+		chown $username:$username /home/$username/.lipsyncd
+        fi
+
+	echo -n "	> /home/$username/.lipsyncd/lipsyncd.log..."
 	touch /var/log/lipsyncd.log
 	chmod g+w /var/log/lipsyncd.log
+	echo "done"
+
+	echo -n "	> checking for $lipsync_dir_local..."
+	if [ ! -d $lipsync_dir_local ]; then
+		echo; echo -n "	> $lipsync_dir_local not found, creating..."
+		mkdir $lipsync_dir_local
+		chown $username:$username $lipsync_dir_local
+	fi
 	echo "done"
 
 	echo "lipsync installed `date`" > /var/log/lipsyncd.log
@@ -143,12 +166,12 @@ deploy(){
 
 start(){
 	/etc/init.d/lipsyncd start; sleep 2
-	if [ -f /var/run/lipsyncd.pid ]; then
-		echo "	NOTICE: lipsyncd is running as pid `cat /var/run/lipsyncd.pid`"
-		echo "	Check /var/log/lipsyncd.log for details"
+	if [ -f /home/$username/.lipsyncd/lipsyncd.pid ]; then
+		echo "	NOTICE: lipsyncd is running as pid `cat /home/$username/.lipsyncd/lipsyncd.pid`"
+		echo "	Check lipsyncd.log for details"
 	else
 		echo "	NOTICE: lipsyncd failed to start..."
-		echo "	Check /var/log/lipsyncd.log for details"
+		echo "	Check /home/$username/.lipsyncd/lipsyncd.log for details"
 	fi
 }
 
