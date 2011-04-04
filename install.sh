@@ -21,7 +21,7 @@ fi
 # Check Linux variant
 ########################################
 echo -n "* Checking Linux variant..."
-if [ `cat /etc/issue.net | cut -d' ' -f1` == "Debian" ] || [ `cat /etc/issue.net | cut -d' ' -f1` == "Ubuntu" ];then
+if [[ $(cat /etc/issue.net | cut -d' ' -f1) == "Debian" ]] || [[ $(cat /etc/issue.net | cut -d' ' -f1) == "Ubuntu" ]];then
 	echo "ok"
 else
 	echo; echo "	ERROR: this installer was written to work with Debian/Ubuntu,"
@@ -59,46 +59,52 @@ questions(){
 }
 
 ssh.keygen(){
-	if [ -f '/home/${username}/.ssh/id_dsa' ]; then
-		echo "* Existing SSH key found for ${username} backing up..."
-		mv /home/${username}/.ssh/id_dsa /home/${username}/.ssh/id_dsa-OLD
-		if [ $? -eq 0 ]; then
-			echo "done"
-		else
-			echo; echo "	ERROR: there was an error backing up the SSH key"; exit 1
-		fi
-	fi
-
-	echo "* Checking for an SSH key for ${username}..."
-	if [ -f /home/${username}/.ssh/id_dsa ]; then
-		echo "* Existing key found, not creating a new one..."
-	else
-		echo -n "* No existing key found, creating SSH key for ${username}..."
-		ssh-keygen -q -N '' -f /home/${username}/.ssh/id_dsa
-		if [ $? -eq 0 ]; then
-		chown -R $username:$username /home/${username}/.ssh
-			echo "done"
-		else
-			echo; echo "	ERROR: there was an error generating the ssh key"; exit 1
-		fi
-	fi
-	
-	echo "* Transferring ssh key for ${username} to ${remote_server} on port ${port} (login as $username now)..."; 
-	su ${username} -c "ssh-copy-id -i /home/${username}/.ssh/id_dsa.pub '-p ${port} ${username}@${remote_server}'" >> /dev/null
-
-	if [ $? -eq 0 ]; then
-		X=0	#echo "done"
-	else
-		echo; echo "	ERROR: there was an error transferring the ssh key"; exit 1
-	fi
-
-	echo -n "* Setting permissions on the ssh key for ${username} on ${remote_server} on port ${port}..."; 
-	su ${username} -c "SSH_AUTH_SOCK=0 ssh ${remote_server} -p ${port} 'chmod 700 .ssh'"
-	if [ $? -eq 0 ]; then
-		echo "done"
-	else
-		echo; echo "	ERROR: there was an error setting permissions on the ssh key for ${username} on ${remote_server} on port ${port}..."; exit 1
-	fi
+  if ssh -i /home/${username}/.ssh/id_dsa -p ${port} -o "KbdInteractiveAuthentication=no" -o "PasswordAuthentication=no" ${username}@${remote_server} echo "hello" > /dev/null
+  then
+    echo "ssh key seems to be properly set up, skipping key generation and transfer steps"
+    return
+  else
+  	if [ -f '/home/${username}/.ssh/id_dsa' ]; then
+  		echo "* Existing SSH key found for ${username} backing up..."
+  		mv /home/${username}/.ssh/id_dsa /home/${username}/.ssh/id_dsa-OLD
+  		if [ $? -eq 0 ]; then
+  			echo "done"
+  		else
+  			echo; echo "	ERROR: there was an error backing up the SSH key"; exit 1
+  		fi
+  	fi
+  
+  	echo "* Checking for an SSH key for ${username}..."
+  	if [ -f /home/${username}/.ssh/id_dsa ]; then
+  		echo "* Existing key found, not creating a new one..."
+  	else
+  		echo -n "* No existing key found, creating SSH key for ${username}..."
+  		ssh-keygen -q -N '' -f /home/${username}/.ssh/id_dsa
+  		if [ $? -eq 0 ]; then
+  		chown -R $username:$username /home/${username}/.ssh
+  			echo "done"
+  		else
+  			echo; echo "	ERROR: there was an error generating the ssh key"; exit 1
+  		fi
+  	fi
+  	
+  	echo "* Transferring ssh key for ${username} to ${remote_server} on port ${port} (login as $username now)..."; 
+  	su ${username} -c "ssh-copy-id -i /home/${username}/.ssh/id_dsa.pub '-p ${port} ${username}@${remote_server}'" >> /dev/null
+  
+  	if [ $? -eq 0 ]; then
+  		X=0	#echo "done"
+  	else
+  		echo; echo "	ERROR: there was an error transferring the ssh key"; exit 1
+  	fi
+  
+  	echo -n "* Setting permissions on the ssh key for ${username} on ${remote_server} on port ${port}..."; 
+  	su ${username} -c "SSH_AUTH_SOCK=0 ssh ${remote_server} -p ${port} 'chmod 700 .ssh'"
+  	if [ $? -eq 0 ]; then
+  		echo "done"
+  	else
+  		echo; echo "	ERROR: there was an error setting permissions on the ssh key for ${username} on ${remote_server} on port ${port}..."; exit 1
+  	fi
+  fi
 }
 
 build.conf(){
@@ -118,7 +124,7 @@ deploy(){
 	echo "done"
 
 	echo -n "	> /usr/local/bin/lipsyncd..."
-	if [ ! -h  /usr/local/bin/lsyncd ]; then
+	if [ -x  /usr/local/bin/lsyncd ]; then
 		ln -s /usr/local/bin/lsyncd /usr/local/bin/lipsyncd
 	fi
 	echo "done"
