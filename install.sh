@@ -173,7 +173,8 @@ deploy(){
 start(){
 	/etc/init.d/lipsyncd start; sleep 2
 	if [ -f /home/$username/.lipsyncd/lipsyncd.pid ]; then
-		echo "	NOTICE: lipsyncd is running as pid `cat /home/$username/.lipsyncd/lipsyncd.pid`"
+#		echo "	NOTICE: lipsyncd is running as pid `cat /home/$username/.lipsyncd/lipsyncd.pid`"
+		echo "	NOTICE: lipsyncd is running as pid `pidof lipsyncd`"
 		echo "	Check lipsyncd.log for details"
 	else
 		echo "	NOTICE: lipsyncd failed to start..."
