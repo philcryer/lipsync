@@ -33,7 +33,7 @@ fi
 ########################################
 echo -n "* Checking for required software..."
 type -P ssh &>/dev/null || { echo; echo "	ERROR: lipsync requires ssh-client but it's not installed" >&2; exit 1; }
-type -P ssh-copy-id &>/dev/null || { echo; echo "	ERROR: lipsync requires ssh-copy-id but it's not installed" >&2; exit 1; }
+#type -P ssh-copy-id &>/dev/null || { echo; echo "	ERROR: lipsync requires ssh-copy-id but it's not installed" >&2; exit 1; }
 type -P rsync &>/dev/null || { echo; echo "	ERROR: lipsync requires rsync but it's not installed" >&2; exit 1; }
 type -P lsyncd &>/dev/null || { echo; echo "	ERROR: lipsync requires lsyncd but it's not installed" >&2; exit 1; }
 echo "ok"
@@ -89,14 +89,27 @@ ssh.keygen(){
   	fi
   	
   	echo "* Transferring ssh key for ${username} to ${remote_server} on port ${port} (login as $username now)..."; 
-  	su ${username} -c "ssh-copy-id -i /home/${username}/.ssh/id_dsa.pub '-p ${port} ${username}@${remote_server}'" >> /dev/null
-  
-  	if [ $? -eq 0 ]; then
-  		X=0	#echo "done"
-  	else
-  		echo; echo "	ERROR: there was an error transferring the ssh key"; exit 1
-  	fi
-  
+
+	if which ssh-copy-id &> /dev/null; then
+  		su ${username} -c "ssh-copy-id -i /home/${username}/.ssh/id_dsa.pub '-p ${port} ${username}@${remote_server}'" >> /dev/null
+  		if [ $? -eq 0 ]; then
+  			X=0	#echo "done"
+  		else
+  			echo
+			echo "	ERROR: there was an error transferring the ssh key"; 
+			exit 1 
+		fi
+	else
+  		su ${username} -c "cat /home/${username}/.ssh/id_rsa.pub | ssh $remote_server -p ${port} 'cat - > /home/${username}/.ssh/id_dsa.pub'" >> /dev/null
+  		if [ $? -eq 0 ]; then
+  			X=0	#echo "done"
+  		else
+  			echo
+			echo "	ERROR: there was an error transferring the ssh key"; 
+			exit 1 
+		fi
+	fi
+
   	echo -n "* Setting permissions on the ssh key for ${username} on ${remote_server} on port ${port}..."; 
   	su ${username} -c "SSH_AUTH_SOCK=0 ssh ${remote_server} -p ${port} 'chmod 700 .ssh'"
   	if [ $? -eq 0 ]; then
