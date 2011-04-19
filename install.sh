@@ -148,6 +148,7 @@ deploy(){
 
 	echo -n "	> /etc/cron.d/lipsync..."
 	cp etc/cron.d/lipsync /etc/cron.d
+	chmod 755 /etc/cron.d/lipsync
 	echo "done"
 
 	echo -n "	> /etc/lipsyncd..."
