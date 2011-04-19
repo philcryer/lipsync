@@ -169,8 +169,8 @@ deploy(){
         fi
 
 	echo -n "	> /home/$username/.lipsyncd/lipsyncd.log..."
-	touch /var/log/lipsyncd.log
-	chmod g+w /var/log/lipsyncd.log
+	touch /home/$username/.lipsyncd/lipsyncd.log
+	chmod g+w /home/$username/.lipsyncd/lipsyncd.log
 	echo "done"
 
 	echo -n "	> checking for $lipsync_dir_local..."
@@ -181,7 +181,7 @@ deploy(){
 	fi
 	echo "done"
 
-	echo "lipsync installed `date`" > /var/log/lipsyncd.log
+	echo "lipsync installed `date`" > /home/$username/.lipsyncd/lipsyncd.log
 }
 
 start(){
