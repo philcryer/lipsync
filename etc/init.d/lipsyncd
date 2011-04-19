@@ -59,8 +59,10 @@ case "$1" in
 	echo -n "Starting $NAME daemon..."
 	su $RUN_AS_USER -c "$DAEMON -log $LOGLEVEL -delay $DELAY_SEC -logfile $LOGFILE -pidfile $PIDFILE -rsyncssh $LOCAL_DIR $REMOTE_HOST $REMOTE_DIR"
 	echo "done"
-	echo `ps -fe | grep "/usr/local/bin/lipsyncd" | grep -v grep | cut -d' ' -f7` > $PIDFILE
-	echo "====== lipsyncd (pid `cat $PIDFILE`) started on `date` =====" >> $LOGFILE
+	#echo `ps -fe | grep "/usr/local/bin/lipsyncd" | grep -v grep | cut -d' ' -f7` > $PIDFILE
+	echo `pidof lipsyncd` > $PIDFILE
+	#echo "====== lipsyncd (pid `cat $PIDFILE`) started on `date` =====" >> $LOGFILE
+	echo "====== lipsyncd (pid `pidof lipsyncd`) started on `date` =====" >> $LOGFILE
 	;;
   stop)
 	echo -n "Stopping $NAME daemon..."
