@@ -62,12 +62,14 @@ case "$1" in
 	#echo `ps -fe | grep "/usr/local/bin/lipsyncd" | grep -v grep | cut -d' ' -f7` > $PIDFILE
 	echo `pidof lipsyncd` > $PIDFILE
 	#echo "====== lipsyncd (pid `cat $PIDFILE`) started on `date` =====" >> $LOGFILE
-	echo "====== lipsyncd (pid `pidof lipsyncd`) started on `date` =====" >> $LOGFILE
+	#echo "====== lipsyncd (pid `pidof lipsyncd`) started on `date` =====" >> $LOGFILE
+	echo "`date "+%a %b %d %T %Y"` Daemon: lipsyncd has started as pid `pidof lipsyncd`" >> $LOGFILE
 	;;
   stop)
 	echo -n "Stopping $NAME daemon..."
 	#start-stop-daemon --stop --oknodo --quiet --pidfile /var/run/$NAME.pid \ --exec $DAEMON
-	echo "====== lipsyncd stopped on `date` =====" >> $LOGFILE
+	#echo "====== lipsyncd stopped on `date` =====" >> $LOGFILE
+	echo "`date "+%a %b %d %T %Y"` Daemon: lipsyncd is stopping" >> $LOGFILE
 	rm $PIDFILE
 	`killall lipsyncd`
 	echo "done"
