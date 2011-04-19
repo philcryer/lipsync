@@ -6,7 +6,7 @@
 PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
 
 echo "lipsync uninstall script"
-	rm ~/.unison/ar* 
+#	rm /home/*/.unison/ar* 
 	rm -rf /usr/share/doc/lipsyncd
 	rm /etc/init.d/lipsync*
 	rm /etc/lipsync*
