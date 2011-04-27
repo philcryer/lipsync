@@ -20,27 +20,8 @@ err=0
 rsync -r -a -v -e "ssh -l $USER_NAME" --delete $REMOTE_HOST:$LOCAL_DIR $REMOTE_DIR
 
 # this writes source -> destination details to /var/log/lipsyncd.log
-#eval src=\${$(($# - 1))}
 eval LOCAL_HOST=`hostname`
-#eval dst=\${$#}
-#echo "$src -> $dst" >> /home/$USER_NAME/.lipsyncd/lipsyncd.log || true
-#echo "`date` Cron: updated $REMOTE_HOST -> $LOCAL_HOST" >> /home/$USER_NAME/.lipsyncd/lipsyncd.log || true
-
 echo "`date "+%a %b %d %T %Y"` Cron: updated $REMOTE_HOST -> $LOCAL_HOST" >> /home/$USER_NAME/.lipsyncd/lipsyncd.log || true
-
-#	echo "====== lipsyncd stopped on `date` =====" >> $LOGFILE
-
-
-#if which notify-send &> /dev/null; then
-#	notify-send --icon=alert --expire-time=1 'lipsync update...' 'lipsync has updated files from the server' 
-#	notify-send --icon=--icon=/usr/share/icons/gnome/32x32/status/info.png --expire-time=1 'lipsync update...' 'lipsync has updated files from the server' 
-#fi
-
-#- Later we can add the feature that the msg echos out a variable from the logfile telling which files were updated
-#- if we want, we can throw a zenity message if we can't find notify-send 
-#echo 'message:lipsync has updated files from the server' | zenity --notification --listen
-
-
 
 # returns the exit code of rsync to lsyncd
 exit $err
