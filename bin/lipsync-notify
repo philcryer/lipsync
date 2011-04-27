@@ -1,0 +1,31 @@
+#!/bin/bash 
+# Distributed under the terms of the BSD License.
+# Copyright (c) 2011 Phil Cryer phil.cryer@gmail.com
+# Source https://github.com/philcryer/lipsync
+
+PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
+CONF_FILE=/etc/lipsyncd
+
+if [ -e $CONF_FILE ]; then
+        . $CONF_FILE
+fi
+
+SYSTEM=`uname`
+
+MESSAGE="${1} files changed and synced"
+
+if [ ${SYSTEM} == 'Linux' ]; then
+	if which notify-send > /dev/null; then
+  		DISPLAY=:0.0 notify-send --icon=info --expire-time=1 'lipsync' "${MESSAGE}"
+	elif which zenity > /dev/null; then
+		echo 'message:lipsync '${MESSAGE}'' | DISPLAY=:0.0 zenity --notification --window-icon=info --listen
+	fi
+fi
+
+if [ ${SYSTEM} == 'Darwin' ]; then
+	if which growlnotify > /dev/null; then
+		growlnotify -i info lipsync -m ''${MESSAGE}''
+	fi
+fi
+
+exit 0
