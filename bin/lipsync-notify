@@ -12,7 +12,7 @@ fi
 
 SYSTEM=`uname`
 
-MESSAGE="${1} files changed and synced"
+MESSAGE="${1}"
 
 if [ ${SYSTEM} == 'Linux' ]; then
 	if which notify-send > /dev/null; then
