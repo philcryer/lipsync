@@ -12,6 +12,7 @@ echo "lipsync uninstall script"
 	rm /etc/lipsync*
 	rm /usr/local/bin/lipsync
 	unlink /usr/local/bin/lipsyncd
+	rm /usr/local/bin/lipsync-notify
 exit 0
 
 

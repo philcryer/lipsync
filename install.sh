@@ -134,6 +134,7 @@ deploy(){
 	echo "* Deploying lipsync..."
 	echo -n "	> /usr/local/bin/lipsync..."
 	cp bin/lipsync /usr/local/bin; chown root:root /usr/local/bin/lipsync; chmod 755 /usr/local/bin/lipsync
+	cp bin/lipsync-notify /usr/local/bin; chown root:root /usr/local/bin/lipsync-notify; chmod 755 /usr/local/bin/lipsync-notify
 	echo "done"
 
 	echo -n "	> /usr/local/bin/lipsyncd..."
