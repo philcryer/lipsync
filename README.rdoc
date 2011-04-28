@@ -7,7 +7,7 @@ lipsync is an open source, lightweight service that provides automated two-way, 
 The basic idea and example of a working system can be seen {here}[https://github.com/philcryer/lipsync/raw/master/docs/diagram.png]
 
 == Features
-- automatic file syntonization from multiple clients to a central server
+- automatic file synchronization from multiple clients to a central server
 - two way syncing with changes tracked and propagated to the clients by the server (Dropbox style)
 - transfers secured and tunneled through OpenSSH
 - safe for everyday use
