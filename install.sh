@@ -170,6 +170,7 @@ deploy(){
         	mkdir /home/$username/.lipsyncd
 		chown $username:$username /home/$username/.lipsyncd
         fi
+	echo "done"
 
 	echo -n "	> /home/$username/.lipsyncd/lipsyncd.log..."
 	touch /home/$username/.lipsyncd/lipsyncd.log
@@ -185,6 +186,13 @@ deploy(){
 	echo "done"
 
 	echo "lipsync installed `date`" > /home/$username/.lipsyncd/lipsyncd.log
+}
+
+initial_sync(){
+	echo -n "* Doing inital sync with server..."
+	. /etc/lipsyncd
+	su $USER_NAME -c 'rsync -rav --stats --log-file=/home/'$USER_NAME'/.lipsyncd/lipsyncd.log -e "ssh -l '$USER_NAME' -p '$SSH_PORT'" '$REMOTE_HOST':'$LOCAL_DIR' '$REMOTE_DIR''
+	echo "Initial sync `date` Completed" > /home/$username/.lipsyncd/lipsyncd.log
 }
 
 start(){
@@ -213,6 +221,7 @@ else
 	ssh.keygen
 	build.conf
 	deploy
+	initial_sync
 fi
 
 ########################################
