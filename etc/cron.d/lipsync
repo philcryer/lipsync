@@ -1,14 +1,1 @@
-#!/bin/sh -e
-# Distributed under the terms of the BSD License.
-# Copyright (c) 2011 Phil Cryer phil.cryer@gmail.com
-# Source https://github.com/philcryer/lipsync
-
-PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
-CONF_FILE=/etc/lipsyncd
-
-if [[ -e $CONF_FILE ]]; then
-        . $CONF_FILE
-fi
-
-# run lipsync against the server every 15 minutes to catch changes from other nodes
-15,30,45,00 * * * *     $USER_NAME	/usr/local/bin/lipsync
+* * * * *	/usr/local/bin/lipsync
