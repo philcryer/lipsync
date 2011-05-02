@@ -33,7 +33,7 @@ echo "`date "+%a %b %d %T %Y"` Cron: updated $REMOTE_HOST -> $LOCAL_HOST" >> /ho
 ###############
 # get line number of last run
 ###############
-LAST_RUN=`cat /home/phil/.lipsyncd/lipsyncd.log | grep --line-number  "] receiving file list" | tail -n1 | cut -d':' -f1`
+LAST_RUN=`cat /home/$USER_NAME/.lipsyncd/lipsyncd.log | grep --line-number  "] receiving file list" | tail -n1 | cut -d':' -f1`
 
 ###############
 # count deleted files since LAST_RUN
