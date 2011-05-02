@@ -61,7 +61,7 @@ questions(){
 ssh.keygen(){
   if ssh -i /home/${username}/.ssh/id_dsa -p ${port} -o "KbdInteractiveAuthentication=no" -o "PasswordAuthentication=no" ${username}@${remote_server} echo "hello" > /dev/null
   then
-    echo "ssh key seems to be properly set up, skipping key generation and transfer steps"
+    echo "	ssh key exists here and on server, skipping key generation and transfer steps"
     return
   else
   	if [ -f '/home/${username}/.ssh/id_dsa' ]; then
@@ -147,9 +147,11 @@ deploy(){
 	cp etc/init.d/lipsyncd /etc/init.d
 	echo "done"
 
-	echo -n "	> /etc/cron.d/lipsync..."
-	cp etc/cron.d/lipsync /etc/cron.d
-	chmod 755 /etc/cron.d/lipsync
+	echo -n "	> Installing cron for user $username..."
+	crontab -u $username etc/cron.d/lipsync
+	#echo -n "	> /etc/cron.d/lipsync..."
+	#cp etc/cron.d/lipsync /etc/cron.d
+	#chmod 755 /etc/cron.d/lipsync
 	echo "done"
 
 	echo -n "	> /etc/lipsyncd..."
