@@ -122,11 +122,12 @@ ssh.keygen(){
 
 build.conf(){
 	echo -n "* Creating lipsyncd config..."
-	sed 's|LSLOCDIR|'$lipsync_dir_local/'|g' etc/lipsyncd > /tmp/lipsyncd01 
-	sed 's|LSUSER|'$username'|g' /tmp/lipsyncd01 > /tmp/lipsyncd02
-	sed 's|LSPORT|'$port'|g' /tmp/lipsyncd02 > /tmp/lipsyncd03
-	sed 's|LSREMSERV|'$remote_server'|g' /tmp/lipsyncd03 > /tmp/lipsyncd04
-	sed 's|LSREMDIR|'$lipsync_dir_remote'|g' /tmp/lipsyncd04 > /tmp/lipsyncd
+	sed etc/lipsyncd_template > etc/lipsyncd \
+		-e 's|LSLOCDIR|'$lipsync_dir_local/'|g' \
+		-e 's|LSUSER|'$username'|g' \
+		-e 's|LSPORT|'$port'|g' \
+		-e 's|LSREMSERV|'$remote_server'|g' \
+		-e 's|LSREMDIR|'$lipsync_dir_remote'|g'
 	echo "done"
 }
 
@@ -155,7 +156,7 @@ deploy(){
 	echo "done"
 
 	echo -n "	> /etc/lipsyncd..."
-	mv /tmp/lipsyncd /etc/
+	mv etc/lipsyncd /etc/
 	echo "done"
 
 	echo -n "	> /usr/share/doc/lipsyncd..."
