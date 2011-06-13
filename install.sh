@@ -174,6 +174,7 @@ deploy(){
 
 	echo -n "	> /home/$username/.lipsyncd/lipsyncd.log..."
 	touch /home/$username/.lipsyncd/lipsyncd.log
+	chown $username:$username /home/$username/.lipsyncd/lipsyncd.log
 	chmod g+w /home/$username/.lipsyncd/lipsyncd.log
 	echo "done"
 
