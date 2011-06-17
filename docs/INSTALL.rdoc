@@ -18,18 +18,18 @@ Verfiy the account was created, and setup a sync directory to sync with
 
 == Client install
 
-Ubuntu (lsyncd 2.0.x)
-apt-get install lua5.1 liblua5.1-0-dev liblua50-dev liblualib50-dev
+Debian (Squeeze or earlier) and Ubuntu (lsyncd 2.0.x)
+	apt-get install lua5.1 liblua5.1-0-dev liblua50-dev liblualib50-dev
 
 wget http://lsyncd.googlecode.com/files/lsyncd-2.0.3.tar.gz
 tar -zxf lsyncd-2.0.3.tar.gz 
 cd lsyncd-2.0.3.tar.gz
 ./configure
-
+make
+make install
 
 Debian (Wheezy and above) (lsyncd 2.0.x)
-apt-get install lsyncd
-
+	apt-get install lsyncd
 
 Uninstall/remove
 /etc/init.d/lipsyncd
@@ -37,7 +37,7 @@ Uninstall/remove
 /usr/local/bin/lsyncd
 /usr/bin/lsync*
 /usr/bin/lipsync
-
+crontab -u USERNAME -r
 
 new CRON:
 
@@ -62,24 +62,23 @@ Install lipsync (if installing from git, first apt-get git-core)
 NOTE: during setup, define server IP, path to sync, username and password, so have those ready
 
 Then run the setup script
-	./setup.sh
+	./install.sh
 
 After you've answered the questions, watch the script's output for errors. Then, check the logs to see if lipsyncd started successfully 
-	tail -f /var/log/lipsyncd.log
+	tail -f /home/$USERNAME/.lipsyncd/lipsyncd.log
 
 = Test
 
 == Open 3 terminals
 
 === Terminal 1 - on the client, become root and watch the logfile
-	su - root
-	tail -f /var/log/lipsyncd.log
+	tail -f /home/$USERNAME/.lipsyncd/lipsyncd.log
 
 === Terminal 2 - on the client, become your normal user
 	su - USER
 
 === Terminal 3 -  on the server, run a watch on the sync directory
-	watch ls -l /home/USER/sync
+	watch ls -l /home/$USERNAME/sync
 NOTE: this terminal will refresh every 2s by default
 
 === Terminal 2 - on the client, create a new file in the sync directory
