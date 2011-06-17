@@ -10,6 +10,8 @@ if [ -e $CONF_FILE ]; then
         . $CONF_FILE
 fi
 
+LOG_FILE="/home/$USER_NAME/.lipsyncd/lipsyncd.log"
+
 ###############
 # this from http://code.google.com/p/lsyncd/wiki/HowToExecAfter
 # execute rsync just like it would have been done directly,
@@ -17,6 +19,17 @@ fi
 ###############
 IFS=
 err=0
+
+###############
+# prevent data loss if there is a running rsync launched by lsyncd
+###############
+echo "`date "+%a %b %d %T %Y"` Cron: checking for running lipsync processes" >> $LOG_FILE
+eval NB_RSYNC_PROCESS=`ps aux | grep rsync | grep "$REMOTE_HOST" | grep -v rsyncssh | grep -cv grep`
+echo "`date "+%a %b %d %T %Y"` Cron: found $NB_RSYNC_PROCESS running lipsync processes" >> $LOG_FILE
+if [ $NB_RSYNC_PROCESS -ne 0 ]; then
+        echo "`date "+%a %b %d %T %Y"` Cron: not running lipsync, another process already running" >> $LOG_FILE
+        exit 0
+fi
 
 ###############
 # run the rsync command to check server for updated files
