@@ -149,7 +149,7 @@ deploy(){
 	echo "done"
 
 	echo -n "	> Installing cron for user $username..."
-	newcronjob="* * * * *  /usr/local/bin/lipsync"      #define entry for crontab	
+	newcronjob="* * * * *  /usr/local/bin/lipsync >/dev/null 2>&1"      #define entry for crontab	
 	(crontab -l; echo "$newcronjob") | crontab -u $username -  #list crontab, read entry from crontab, add line from stdin to crontab
 	echo "done"
 
