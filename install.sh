@@ -36,6 +36,10 @@ type -P ssh &>/dev/null || { echo; echo "	ERROR: lipsync requires ssh-client but
 #type -P ssh-copy-id &>/dev/null || { echo; echo "	ERROR: lipsync requires ssh-copy-id but it's not installed" >&2; exit 1; }
 type -P rsync &>/dev/null || { echo; echo "	ERROR: lipsync requires rsync but it's not installed" >&2; exit 1; }
 type -P lsyncd &>/dev/null || { echo; echo "	ERROR: lipsync requires lsyncd but it's not installed" >&2; exit 1; }
+LSYNCD_VERSION=`lsyncd -version | cut -d' ' -f2 | cut -d'.' -f1`
+if [ $LSYNCD_VERSION -lt '2' ]; then
+	        echo; echo "    ERROR: lipsync requires lsyncd 2.x or greater, but it's not installed" >&2; exit 1
+fi
 echo "ok"
 
 ########################################
