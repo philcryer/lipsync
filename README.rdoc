@@ -27,7 +27,7 @@ The mailing list for the lipsync project is hosted on Google Groups, signup {her
 	chmod +x install.sh
 	./install.sh
 
-After that, see the docs/INSTALL file or {INSTALL}[https://github.com/philcryer/lipsync/raw/master/docs/INSTALL] for full documentation
+After that, see the docs/INSTALL file or online, {INSTALL}[https://github.com/philcryer/lipsync/raw/master/docs/INSTALL.rdoc] for full documentation
 
 == Caveats
 Much of the initial feedback I received asked for a graphical user interface and support for Windows. Please know that I have attempted neither, instead deciding to focus on the basic server-side functionality. This allowed me to flesh out the architecture, deciding on all the options and understanding ways to improve the transfer performance. Since most of the software used for lipsync is cross-platform, I'd be interested in working with others that want to build a gui front end to talk to the the lipsync backend service. I've been interested in the work done on the {SparkleShare}[http://sparkleshare.org/] project, and since it can use different backends I'm hopeful that it will be agnostic enough to adapt to use lipsync.
