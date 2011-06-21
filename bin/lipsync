@@ -6,10 +6,20 @@
 PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
 CONF_FILE=/etc/lipsyncd
 
+###############
+# DO NOT RUN if lipsyncd isn't running
+###############
+eval LIPSYNCD_PROCESS=`ps aux | grep lipsyncd.pid | grep -cv grep`
+if [ $LIPSYNCD_PROCESS -eq 0 ]; then
+	        exit 0
+fi
+
+###############
+# source config, define logfile
+###############
 if [ -e $CONF_FILE ]; then
         . $CONF_FILE
 fi
-
 LOG_FILE="/home/$USER_NAME/.lipsyncd/lipsyncd.log"
 
 ###############
