@@ -21,12 +21,12 @@ Verfiy the account was created, and setup a sync directory to sync with
 Debian (Squeeze or earlier) and Ubuntu (lsyncd 2.0.x)
 	apt-get install lua5.1 liblua5.1-0-dev liblua50-dev liblualib50-dev
 
-wget http://lsyncd.googlecode.com/files/lsyncd-2.0.3.tar.gz
-tar -zxf lsyncd-2.0.3.tar.gz 
-cd lsyncd-2.0.3.tar.gz
-./configure
-make
-make install
+    wget http://lsyncd.googlecode.com/files/lsyncd-2.0.3.tar.gz
+    tar -zxf lsyncd-2.0.3.tar.gz
+    cd lsyncd-2.0.3
+    ./configure
+    make
+    make install
 
 Debian (Wheezy and above) (lsyncd 2.0.x)
 	apt-get install lsyncd
