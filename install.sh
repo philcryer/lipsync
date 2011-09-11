@@ -150,6 +150,7 @@ deploy(){
 
 	echo -n "	> /etc/init.d/lipsyncd..."
 	cp etc/init.d/lipsyncd /etc/init.d
+	chmod +x /etc/init.d/lipsyncd
 	echo "done"
 
 	echo -n "	> Installing cron for user $username..."
