@@ -104,7 +104,7 @@ ssh.keygen(){
 			exit 1 
 		fi
 	else
-  		su ${username} -c "cat /home/${username}/.ssh/id_rsa.pub | ssh $remote_server -p ${port} 'cat - > /home/${username}/.ssh/id_dsa.pub'" >> /dev/null
+  		su ${username} -c "cat /home/${username}/.ssh/id_dsa.pub | ssh $remote_server -p ${port} 'cat - >> /home/${username}/.ssh/authorized_keys'" >> /dev/null
   		if [ $? -eq 0 ]; then
   			X=0	#echo "done"
   		else
