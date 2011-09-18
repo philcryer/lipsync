@@ -104,7 +104,7 @@ ssh.keygen(){
 			exit 1 
 		fi
 	else
-  		su ${username} -c "cat /home/${username}/.ssh/id_rsa.pub | ssh $remote_server -p ${port} 'cat - > /home/${username}/.ssh/id_dsa.pub'" >> /dev/null
+  		su ${username} -c "cat /home/${username}/.ssh/id_dsa.pub | ssh $remote_server -p ${port} 'cat - >> /home/${username}/.ssh/authorized_keys'" >> /dev/null
   		if [ $? -eq 0 ]; then
   			X=0	#echo "done"
   		else
@@ -195,7 +195,7 @@ deploy(){
 initial_sync(){
 	echo -n "* Doing inital sync with server..."
 	. /etc/lipsyncd
-	su $USER_NAME -c 'rsync -rav --stats --log-file=/home/'$USER_NAME'/.lipsyncd/lipsyncd.log -e "ssh -l '$USER_NAME' -p '$SSH_PORT'" '$REMOTE_HOST':'$LOCAL_DIR' '$REMOTE_DIR''
+	su $USER_NAME -c 'rsync -rav --stats --log-file=/home/'$USER_NAME'/.lipsyncd/lipsyncd.log -e "ssh -l '$USER_NAME' -p '$SSH_PORT'" '$REMOTE_HOST':'$REMOTE_DIR' '$LOCAL_DIR''
 	echo "Initial sync `date` Completed" > /home/$username/.lipsyncd/lipsyncd.log
 }
 
