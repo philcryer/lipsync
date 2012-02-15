@@ -45,7 +45,7 @@ fi
 # run the rsync command to check server for updated files
 ###############
 #/usr/bin/rsync $@ || err=$?
-rsync -rav --stats --log-file=/home/$USER_NAME/.lipsyncd/lipsyncd.log -e "ssh -l $USER_NAME -p $SSH_PORT" --delete $REMOTE_HOST:$LOCAL_DIR $REMOTE_DIR
+rsync -rav --stats --log-file=/home/$USER_NAME/.lipsyncd/lipsyncd.log -e "ssh -l $USER_NAME -p $SSH_PORT" --delete $REMOTE_HOST:$REMOTE_DIR $LOCAL_DIR
 
 ###############
 # this writes source -> destination details to lipsyncd.log
