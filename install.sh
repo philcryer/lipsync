@@ -62,7 +62,7 @@ questions(){
 	read lipsync_dir_remote
 }
 
-ssh.keygen(){
+ssh_keygen(){
   if ssh -i /home/${username}/.ssh/id_dsa -p ${port} -o "KbdInteractiveAuthentication=no" -o "PasswordAuthentication=no" ${username}@${remote_server} echo "hello" > /dev/null
   then
     echo "	ssh key exists here and on server, skipping key generation and transfer steps"
@@ -124,7 +124,7 @@ ssh.keygen(){
   fi
 }
 
-build.conf(){
+build_conf(){
 	echo -n "* Creating lipsyncd config..."
 	sed etc/lipsyncd_template > etc/lipsyncd \
 		-e 's|LSLOCDIR|'$lipsync_dir_local/'|g' \
@@ -145,6 +145,9 @@ deploy(){
 	echo -n "	> /usr/local/bin/lipsyncd..."
 	if [ -x  /usr/local/bin/lsyncd ]; then
 		ln -s /usr/local/bin/lsyncd /usr/local/bin/lipsyncd
+	fi
+	if [ -x  /usr/bin/lsyncd ]; then
+		ln -s /usr/bin/lsyncd /usr/local/bin/lipsyncd
 	fi
 	echo "done"
 
@@ -223,8 +226,8 @@ if [ "${1}" = "uninstall" ]; then
 	exit 0
 else
 	questions
-	ssh.keygen
-	build.conf
+	ssh_keygen
+	build_conf
 	deploy
 	initial_sync
 fi
