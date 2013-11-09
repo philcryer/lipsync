@@ -63,14 +63,14 @@ questions(){
 }
 
 ssh_keygen(){
-  if ssh -i /home/${username}/.ssh/id_dsa -p ${port} -o "KbdInteractiveAuthentication=no" -o "PasswordAuthentication=no" ${username}@${remote_server} echo "hello" > /dev/null
+  if ssh -i ~${username}/.ssh/id_dsa -p ${port} -o "KbdInteractiveAuthentication=no" -o "PasswordAuthentication=no" ${username}@${remote_server} echo "hello" > /dev/null
   then
     echo "	ssh key exists here and on server, skipping key generation and transfer steps"
     return
   else
-  	if [ -f '/home/${username}/.ssh/id_dsa' ]; then
+  	if [ -f '~${username}/.ssh/id_dsa' ]; then
   		echo "* Existing SSH key found for ${username} backing up..."
-  		mv /home/${username}/.ssh/id_dsa /home/${username}/.ssh/id_dsa-OLD
+  		mv ~${username}/.ssh/id_dsa ~${username}/.ssh/id_dsa-OLD
   		if [ $? -eq 0 ]; then
   			echo "done"
   		else
@@ -79,13 +79,13 @@ ssh_keygen(){
   	fi
   
   	echo "* Checking for an SSH key for ${username}..."
-  	if [ -f /home/${username}/.ssh/id_dsa ]; then
+  	if [ -f ~${username}/.ssh/id_dsa ]; then
   		echo "* Existing key found, not creating a new one..."
   	else
   		echo -n "* No existing key found, creating SSH key for ${username}..."
-  		ssh-keygen -q -N '' -f /home/${username}/.ssh/id_dsa
+  		ssh-keygen -q -N '' -f ~${username}/.ssh/id_dsa
   		if [ $? -eq 0 ]; then
-  		chown -R $username:$username /home/${username}/.ssh
+  		chown -R $username:$username ~${username}/.ssh
   			echo "done"
   		else
   			echo; echo "	ERROR: there was an error generating the ssh key"; exit 1
@@ -95,7 +95,7 @@ ssh_keygen(){
   	echo "* Transferring ssh key for ${username} to ${remote_server} on port ${port} (login as $username now)..."; 
 
 	if which ssh-copy-id &> /dev/null; then
-  		su ${username} -c "ssh-copy-id -i /home/${username}/.ssh/id_dsa.pub '-p ${port} ${username}@${remote_server}'" >> /dev/null
+  		su ${username} -c "ssh-copy-id -i ~${username}/.ssh/id_dsa.pub '-p ${port} ${username}@${remote_server}'" >> /dev/null
   		if [ $? -eq 0 ]; then
   			X=0	#echo "done"
   		else
@@ -104,7 +104,7 @@ ssh_keygen(){
 			exit 1 
 		fi
 	else
-		su ${username} -c "cat /home/${username}/.ssh/id_dsa.pub | ssh $remote_server -p ${port} 'cat - >> /home/${username}/.ssh/authorized_keys'" >> /dev/null
+		su ${username} -c "cat ~${username}/.ssh/id_dsa.pub | ssh $remote_server -p ${port} 'cat - >> ~${username}/.ssh/authorized_keys'" >> /dev/null
   		if [ $? -eq 0 ]; then
   			X=0	#echo "done"
   		else
@@ -171,17 +171,17 @@ deploy(){
 	cp README* LICENSE uninstall.sh docs/* /usr/share/doc/lipsyncd
 	echo "done"
 
-	echo -n "	> /home/$username/.lipsyncd..."
- 	if [ ! -d /home/$username/.lipsyncd ]; then
-        	mkdir /home/$username/.lipsyncd
-		chown $username:$username /home/$username/.lipsyncd
+	echo -n "	> ~$username/.lipsyncd..."
+ 	if [ ! -d ~$username/.lipsyncd ]; then
+        	mkdir ~$username/.lipsyncd
+		chown $username:$username ~$username/.lipsyncd
         fi
 	echo "done"
 
-	echo -n "	> /home/$username/.lipsyncd/lipsyncd.log..."
-	touch /home/$username/.lipsyncd/lipsyncd.log
-	chown $username:$username /home/$username/.lipsyncd/lipsyncd.log
-	chmod g+w /home/$username/.lipsyncd/lipsyncd.log
+	echo -n "	> ~$username/.lipsyncd/lipsyncd.log..."
+	touch ~$username/.lipsyncd/lipsyncd.log
+	chown $username:$username ~$username/.lipsyncd/lipsyncd.log
+	chmod g+w ~$username/.lipsyncd/lipsyncd.log
 	echo "done"
 
 	echo -n "	> checking for $lipsync_dir_local..."
@@ -192,25 +192,25 @@ deploy(){
 	fi
 	echo "done"
 
-	echo "lipsync installed `date`" > /home/$username/.lipsyncd/lipsyncd.log
+	echo "lipsync installed `date`" > ~$username/.lipsyncd/lipsyncd.log
 }
 
 initial_sync(){
 	echo -n "* Doing inital sync with server..."
 	. /etc/lipsyncd
-	su $USER_NAME -c 'rsync -rav --stats --log-file=/home/'$USER_NAME'/.lipsyncd/lipsyncd.log -e "ssh -l '$USER_NAME' -p '$SSH_PORT'" '$REMOTE_HOST':'$REMOTE_DIR' '$LOCAL_DIR''
-	echo "Initial sync `date` Completed" > /home/$username/.lipsyncd/lipsyncd.log
+	su $USER_NAME -c 'rsync -rav --stats --log-file=~'$USER_NAME'/.lipsyncd/lipsyncd.log -e "ssh -l '$USER_NAME' -p '$SSH_PORT'" '$REMOTE_HOST':'$REMOTE_DIR' '$LOCAL_DIR''
+	echo "Initial sync `date` Completed" > ~$username/.lipsyncd/lipsyncd.log
 }
 
 start(){
 	/etc/init.d/lipsyncd start; sleep 2
-	if [ -f /home/$username/.lipsyncd/lipsyncd.pid ]; then
-#		echo "	NOTICE: lipsyncd is running as pid `cat /home/$username/.lipsyncd/lipsyncd.pid`"
+	if [ -f ~$username/.lipsyncd/lipsyncd.pid ]; then
+#		echo "	NOTICE: lipsyncd is running as pid `cat ~$username/.lipsyncd/lipsyncd.pid`"
 		echo "	NOTICE: lipsyncd is running as pid `pidof lipsyncd`"
 		echo "	Check lipsyncd.log for details"
 	else
 		echo "	NOTICE: lipsyncd failed to start..."
-		echo "	Check /home/$username/.lipsyncd/lipsyncd.log for details"
+		echo "	Check ~$username/.lipsyncd/lipsyncd.log for details"
 	fi
 }
 
