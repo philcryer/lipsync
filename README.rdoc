@@ -2,9 +2,9 @@
 
 A lightweight service that provides automated file synchronization between multiple hosts.
 
-lipsync is an open source, lightweight service that provides automated two-way, {Dropbox}[http://bit.ly/1IGiJu]-like file synchronization in Linux by utilizing {OpenSSH}[http://www.openssh.com/], {rsync}[http://rsync.samba.org/], and {lsyncd}[http://code.google.com/p/lsyncd/]. lipsync is a realization of a popular blog post of mine named {HOWTO build your own open source Dropbox clone}[http://fak3r.com/2009/09/14/howto-build-your-own-open-source-dropbox-clone/]. Since I made the posting I've received a great deal of interest, and had time to test and architect a workable solution. Thanks to everyone that read, commented and encouraged the further development of this idea!
+lipsync is an open source, lightweight service that provides automated two-way, {Dropbox}[https://www.dropbox.com/features/sync] -like file synchronization in Linux by utilizing {OpenSSH}[http://www.openssh.com/], {rsync}[http://rsync.samba.org/], and {lsyncd}[http://code.google.com/p/lsyncd/]. lipsync is a realization of a popular blog post of mine named {Build an open source Dropbox clone}[https://fak3r.com/2009/09/14/build-an-open-source-dropbox-clone/]. Since I made the posting I've received a great deal of interest, and had time to test and architect a workable solution. Thanks to everyone that read, commented and encouraged the further development of this idea!
 
-The basic idea and example of a working system can be seen {here}[https://github.com/philcryer/lipsync/raw/master/docs/diagram.png].
+The basic idea and example of a working system can be seen here: {diagram}[https://github.com/philcryer/lipsync/raw/master/docs/diagram.png].
 
 == Features
 - automatic file synchronization from multiple clients to a central server
